@@ -1,0 +1,265 @@
+/* Loading & Error */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    gap: 16px;
+    color: #666;
+}
+
+.error-card {
+    text-align: center;
+    padding: 40px;
+    max-width: 500px;
+    margin: 40px auto;
+    border-radius: 12px;
+}
+
+.error-card mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+}
+
+/* Layout */
+.detail-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.main-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.side-column {
+    width: 350px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mb-24 {
+    margin-bottom: 24px;
+}
+
+.my-24 {
+    margin: 24px 0;
+}
+
+.mt-24 {
+    margin-top: 24px;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.pt-16 {
+    padding-top: 16px;
+}
+
+.mb-12 {
+    margin-bottom: 12px;
+}
+
+/* Main Card */
+.info-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header-bar {
+    background: #f8faff;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.type-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.detail-item mat-icon {
+    color: #78909c;
+    margin-top: 2px;
+}
+
+.detail-item strong {
+    display: block;
+    font-size: 0.85rem;
+    color: #757575;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.detail-item p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #212121;
+}
+
+.detail-item.highlight mat-icon {
+    color: #fb8c00;
+}
+
+.detail-item.highlight p {
+    color: #e65100;
+    font-weight: 600;
+}
+
+h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.inline-icon {
+    margin-right: 8px;
+    color: #555;
+}
+
+.long-text {
+    color: #555;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* Side Cards */
+.action-card {
+    border-radius: 12px;
+}
+
+.deadline-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff3e0;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #ff9800;
+}
+
+.deadline-box mat-icon {
+    color: #f57c00;
+}
+
+.deadline-box .label {
+    display: block;
+    font-size: 0.85rem;
+    color: #e65100;
+}
+
+.deadline-box .value {
+    font-size: 1.1rem;
+    color: #bf360c;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.stats-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.warning-text {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.action-btn {
+    height: 48px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+.status-alert {
+    padding: 16px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: #616161;
+    text-align: center;
+    font-weight: 500;
+}
+
+.status-alert.info {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-alert.warn {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Admin Card */
+.admin-card {
+    border-radius: 12px;
+    background: #f9fbfd;
+    border: 1px solid #e0e0e0;
+}
+
+.admin-card mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    color: #424242;
+}
+
+.admin-actions button {
+    height: 40px;
+    border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .detail-layout {
+        flex-direction: column;
+    }
+
+    .side-column {
+        width: 100%;
+    }
+}

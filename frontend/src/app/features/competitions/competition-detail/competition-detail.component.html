@@ -1,0 +1,157 @@
+@if (loading()) {
+<div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails...</p>
+</div>
+} @else if (error() || !competition) {
+<mat-card class="error-card">
+    <mat-card-content>
+        <mat-icon color="warn">error_outline</mat-icon>
+        <h2>Compétition introuvable</h2>
+        <p>La compétition que vous recherchez n'existe pas ou a été supprimée.</p>
+        <button mat-flat-button color="primary" routerLink="/app/competitions">Retour à la liste</button>
+    </mat-card-content>
+</mat-card>
+} @else {
+<app-page-header title="{{ competition.name }}" subtitle="Organisateur: {{ competition.organizerName }}"
+    icon="emoji_events"
+    [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'}, {label:'Compétitions', route:'/app/competitions'}, {label:'Détails'}]">
+</app-page-header>
+
+<div class="detail-layout">
+    <!-- Left Column: Main info -->
+    <div class="main-column">
+        <mat-card class="info-card mb-24">
+            <div class="card-header-bar">
+                <div class="type-badge">{{ typeLabels[competition.type] }}</div>
+                <app-status-badge [status]="competition.status"></app-status-badge>
+            </div>
+
+            <mat-card-content class="pt-16">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <mat-icon>category</mat-icon>
+                        <div>
+                            <strong>Catégorie</strong>
+                            <p>{{ competition.category }}</p>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <mat-icon>location_on</mat-icon>
+                        <div>
+                            <strong>Lieu</strong>
+                            <p>{{ competition.location }}</p>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <mat-icon>calendar_today</mat-icon>
+                        <div>
+                            <strong>Dates</strong>
+                            <p>{{ competition.startDate | date:'dd MMM yyyy' }} - {{ competition.endDate | date:'dd MMM
+                                yyyy' }}</p>
+                        </div>
+                    </div>
+                    @if (competition.prize) {
+                    <div class="detail-item highlight">
+                        <mat-icon>card_giftcard</mat-icon>
+                        <div>
+                            <strong>Récompenses</strong>
+                            <p>{{ competition.prize }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <mat-divider class="my-24"></mat-divider>
+
+                <h3><mat-icon class="inline-icon">description</mat-icon> Description</h3>
+                <p class="long-text">{{ competition.description || 'Aucune description fournie.' }}</p>
+
+                @if (competition.rules) {
+                <h3 class="mt-24"><mat-icon class="inline-icon">gavel</mat-icon> Règlement</h3>
+                <p class="long-text">{{ competition.rules }}</p>
+                }
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Right Column: Actions and Stats -->
+    <div class="side-column">
+        <!-- Inscriptions Card -->
+        <mat-card class="action-card mb-24">
+            <mat-card-header>
+                <mat-card-title>Inscriptions</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="pt-16">
+                <div class="deadline-box">
+                    <mat-icon>timer</mat-icon>
+                    <div>
+                        <span class="label">Date limite :</span>
+                        <strong class="value">{{ competition.registrationDeadline | date:'dd MMM yyyy' }}</strong>
+                    </div>
+                </div>
+
+                <div class="participants-stats mt-24">
+                    <div class="stats-header">
+                        <span>Places occupées</span>
+                        <strong>{{ competition.currentParticipants }} / {{ competition.maxParticipants }}</strong>
+                    </div>
+                    <mat-progress-bar mode="determinate" [value]="getFillPercentage()"
+                        [color]="getFillPercentage() >= 100 ? 'warn' : 'primary'"></mat-progress-bar>
+                    <div class="stats-footer">
+                        <span>{{ getFillPercentage() | number:'1.0-0' }}% complet</span>
+                        @if (competition.maxParticipants - competition.currentParticipants <= 5 &&
+                            competition.maxParticipants - competition.currentParticipants> 0) {
+                            <span class="warning-text">Plus que {{ competition.maxParticipants -
+                                competition.currentParticipants }} places !</span>
+                            }
+                    </div>
+                </div>
+
+                <div class="actions-container mt-24">
+                    @if (competition.status === 'open') {
+                    <button mat-flat-button color="primary" class="full-width action-btn"
+                        [routerLink]="['/app/competitions', competition.id, 'register']">
+                        <mat-icon>how_to_reg</mat-icon> S'inscrire
+                    </button>
+                    } @else if (competition.status === 'draft') {
+                    <div class="status-alert">Cette compétition est en brouillon, les inscriptions sont fermées.</div>
+                    } @else if (competition.status === 'ongoing') {
+                    <div class="status-alert info">La compétition a commencé. Suivez les résultats !</div>
+                    } @else {
+                    <div class="status-alert warn">Les inscriptions sont closes.</div>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Admin Actions Card -->
+        @if (canManage()) {
+        <mat-card class="admin-card">
+            <mat-card-header>
+                <mat-card-title><mat-icon>admin_panel_settings</mat-icon> Administration</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="admin-actions">
+                    <button mat-stroked-button color="primary" class="full-width mb-12"
+                        [routerLink]="['/app/competitions', competition.id, 'registrations']">
+                        <mat-icon>checklist</mat-icon> Gérer les participants
+                    </button>
+                    <button mat-stroked-button class="full-width mb-12">
+                        <mat-icon>edit</mat-icon> Modifier
+                    </button>
+                    @if (competition.status === 'draft') {
+                    <button mat-flat-button style="background-color: #4caf50; color: white;" class="full-width mb-12">
+                        <mat-icon>publish</mat-icon> Publier / Ouvrir
+                    </button>
+                    }
+                    <button mat-stroked-button color="warn" class="full-width" (click)="deleteComp()">
+                        <mat-icon>delete</mat-icon> Supprimer
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+</div>
+}

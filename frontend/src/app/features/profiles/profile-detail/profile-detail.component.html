@@ -1,0 +1,170 @@
+<!-- Page Header -->
+<app-page-header title="Profil de {{ user?.firstName || 'Membre' }}"
+    subtitle="Consultation des informations du profil sportif" icon="person"
+    [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'}, {label:'Profils', route:'/app/profiles'}, {label: user?.firstName + ' ' + user?.lastName || 'Détail'}]">
+</app-page-header>
+
+@if (loading()) {
+<div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+</div>
+} @else if (error() || !user) {
+<div class="error-container">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <h3>Profil introuvable</h3>
+    <p>Ce profil n'existe pas ou vous n'avez pas la permission de le voir.</p>
+    <button mat-flat-button color="primary" routerLink="/app/profiles">Retour à l'annuaire</button>
+</div>
+} @else {
+<div class="profile-layout">
+
+    <!-- LEFT COLUMN: Identity Card (Public) -->
+    <div class="sidebar-column">
+        <mat-card class="identity-card">
+            <div class="identity-header">
+                <div class="avatar-large" [style.background-color]="getRoleColor(user.role) + '20'"
+                    [style.color]="getRoleColor(user.role)">
+                    {{ getInitials() }}
+                </div>
+                <h2 class="user-name">{{ user.firstName }} {{ user.lastName }}</h2>
+                <span class="role-badge" [style.background-color]="getRoleColor(user.role) + '20'"
+                    [style.color]="getRoleColor(user.role)">
+                    {{ getRoleLabel(user.role) }}
+                </span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="identity-body">
+                <div class="info-row">
+                    <mat-icon>business</mat-icon>
+                    <span class="highlight">{{ user.clubName || 'Aucun club affilié' }}</span>
+                </div>
+                <div class="info-row">
+                    <mat-icon>category</mat-icon>
+                    <span>Catégorie: <strong>Senior</strong></span>
+                </div>
+            </div>
+            <!-- Private Info only visible to Admin/Manager -->
+            @if (canViewPrivateInfo()) {
+            <mat-divider></mat-divider>
+            <div class="identity-body private-info-section">
+                <div class="section-label">Informations de contact (Privé)</div>
+                <div class="info-row">
+                    <mat-icon>email</mat-icon>
+                    <span>{{ user.email }}</span>
+                </div>
+                @if (user.phone) {
+                <div class="info-row">
+                    <mat-icon>phone</mat-icon>
+                    <span>{{ user.phone }}</span>
+                </div>
+                }
+            </div>
+            }
+        </mat-card>
+    </div>
+
+    <!-- RIGHT COLUMN: Details Sections -->
+    <div class="main-column">
+
+        <!-- About Section (Public mostly) -->
+        <mat-card class="section-card mb-24">
+            <mat-card-header>
+                <mat-card-title>
+                    <mat-icon>badge</mat-icon> À propos
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="pt-16">
+                <p class="bio-text">{{ profile?.bio || 'Aucune biographie renseignée pour ce profil.' }}</p>
+
+                <div class="tags-section mt-16" *ngIf="profile?.skills?.length">
+                    <h4 class="section-subtitle">Compétences / Style de jeu</h4>
+                    <mat-chip-set>
+                        @for (skill of profile?.skills; track skill) {
+                        <mat-chip>{{ skill }}</mat-chip>
+                        }
+                    </mat-chip-set>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Split view for License and Stats -->
+        <div class="cards-grid mb-24">
+            <!-- License Summary Card (Limited for public, detailed for private) -->
+            <mat-card class="section-card half-card">
+                <mat-card-header>
+                    <mat-card-title>
+                        <mat-icon class="icon-primary">credit_card</mat-icon> Licence
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="pt-16">
+                    <div class="license-display">
+                        <div class="license-status">
+                            Statut: <app-status-badge status="active"></app-status-badge>
+                        </div>
+                        @if (canViewPrivateInfo()) {
+                        <div class="license-number">No. 2024-{{ user.id.padStart(5, '0') }}</div>
+                        <div class="license-validity">Valable jusqu'au 31/08/2025</div>
+                        <button mat-stroked-button color="primary" class="mt-16 full-width"
+                            [routerLink]="['/app/licenses', user.id]">
+                            Gérer la licence
+                        </button>
+                        } @else {
+                        <div class="license-public-note mt-16">Licence enregistrée et valide pour la saison en cours.
+                        </div>
+                        }
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <!-- Sports Stats Card (Public) -->
+            <mat-card class="section-card half-card">
+                <mat-card-header>
+                    <mat-card-title>
+                        <mat-icon class="icon-accent">leaderboard</mat-icon> Chiffres Clés
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="pt-16">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-lbl">Points</span>
+                            <span class="stat-val highlight-val">{{ profile?.stats?.points || 0 }}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-lbl">Classement</span>
+                            <span class="stat-val">#{{ profile?.stats?.ranking || '-' }}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-lbl">Matchs (V/D)</span>
+                            <span class="stat-val">
+                                <span class="text-success">{{ profile?.stats?.wins || 0 }}</span> -
+                                <span class="text-danger">{{ profile?.stats?.losses || 0 }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- History / Admin logs (Private only) -->
+        @if (canViewPrivateInfo()) {
+        <mat-card class="section-card">
+            <mat-card-header>
+                <mat-card-title>
+                    <mat-icon color="primary">history</mat-icon> Historique du Compte (Admin)
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="pt-16">
+                <div class="history-placeholder">
+                    <p class="history-item"><strong>01/01/2024:</strong> Date de création du profil dans la base FTTT.
+                    </p>
+                    <p class="history-item"><strong>15/01/2024:</strong> Renouvellement de la licence sportive (Saison
+                        2024-2025).</p>
+                    <p class="history-item text-muted">Abonnement au club: {{ user.clubName || '—' }}</p>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+
+    </div>
+</div>
+}

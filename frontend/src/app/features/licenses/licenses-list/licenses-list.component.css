@@ -1,0 +1,121 @@
+.license-stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.stat-pill mat-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.stat-active {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.stat-pending {
+    background: #fff8e1;
+    color: #f57f17;
+}
+
+.stat-rejected {
+    background: #fce4ec;
+    color: #c62828;
+}
+
+.stat-expired {
+    background: #f3e5f5;
+    color: #6a1b9a;
+}
+
+.filter-card {
+    margin-bottom: 16px;
+    border-radius: 16px !important;
+    padding: 16px 20px !important;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.table-card {
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 48px;
+    color: #666;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.license-table {
+    width: 100%;
+}
+
+.license-table th {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    background: #f8f9ff;
+}
+
+.license-table td {
+    padding: 12px 16px !important;
+}
+
+.license-table th {
+    padding: 10px 16px !important;
+}
+
+.license-number {
+    font-family: monospace;
+    font-weight: 600;
+    color: #1565c0;
+    font-size: 0.8rem;
+}
+
+.player-name {
+    font-weight: 600;
+}
+
+.expiry-date {
+    font-size: 0.82rem;
+    color: #999;
+}
+
+.table-row {
+    transition: background 0.15s;
+}
+
+.approve-btn {
+    color: #2e7d32;
+}
+
+.reject-btn {
+    color: #c62828;
+}
