@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Eureka-Service" />
         <module name="Gateway-Service" />
+        <module name="Terrain-tennis-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Eureka-Service" options="-parameters" />
       <module name="Gateway-Service" options="-parameters" />
+      <module name="Terrain-tennis-service" options="-parameters" />
     </option>
   </component>
 </project>
