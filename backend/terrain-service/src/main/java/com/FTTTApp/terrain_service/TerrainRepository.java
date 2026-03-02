@@ -1,4 +1,4 @@
-package FTTApp.Terrain_tennis_service;
+package com.FTTTApp.terrain_service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

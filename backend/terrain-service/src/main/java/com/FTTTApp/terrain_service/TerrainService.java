@@ -1,4 +1,4 @@
-package FTTApp.Terrain_tennis_service;
+package com.FTTTApp.terrain_service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
