@@ -1,0 +1,95 @@
+<app-page-header title="Gestion des Licences" subtitle="Gérer et valider les demandes de licences" icon="badge"
+    [breadcrumbs]="[{label:'Dashboard', route:'/app/dashboard'},{label:'Licences'}]"
+    [actions]="[{label:'Exporter', icon:'download', variant:'stroked', action:emptyAction}, {label:'Nouvelle Demande', icon:'add', action:goToNewLicense.bind(this)}]"></app-page-header>
+
+<!-- Stats -->
+<div class="license-stats-bar">
+    <div class="stat-pill stat-active"><mat-icon>check_circle</mat-icon> {{ getCount('active') }} Actives</div>
+    <div class="stat-pill stat-pending"><mat-icon>hourglass_empty</mat-icon> {{ getCount('pending') }} En attente</div>
+    <div class="stat-pill stat-rejected"><mat-icon>cancel</mat-icon> {{ getCount('rejected') }} Refusées</div>
+    <div class="stat-pill stat-expired"><mat-icon>schedule</mat-icon> {{ getCount('expired') }} Expirées</div>
+</div>
+
+<!-- Filters -->
+<mat-card class="filter-card">
+    <div class="filters">
+        <mat-form-field appearance="outline" style="flex:1;min-width:200px">
+            <mat-label>Rechercher...</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="min-width:150px">
+            <mat-label>Statut</mat-label>
+            <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()">
+                <mat-option value="">Tous</mat-option>
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="pending">En attente</mat-option>
+                <mat-option value="approved">Approuvée</mat-option>
+                <mat-option value="rejected">Refusée</mat-option>
+                <mat-option value="expired">Expirée</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</mat-card>
+
+<!-- Table -->
+<mat-card class="table-card">
+    @if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Chargement...</span>
+    </div>
+    } @else {
+    <div class="table-responsive">
+        <table mat-table [dataSource]="filtered" class="license-table">
+            <ng-container matColumnDef="number">
+                <th mat-header-cell *matHeaderCellDef>N° Licence</th>
+                <td mat-cell *matCellDef="let l">
+                    <span class="license-number">{{ l.licenseNumber }}</span>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="player">
+                <th mat-header-cell *matHeaderCellDef>Joueur</th>
+                <td mat-cell *matCellDef="let l"><span class="player-name">{{ l.playerName }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="club">
+                <th mat-header-cell *matHeaderCellDef>Club</th>
+                <td mat-cell *matCellDef="let l">{{ l.clubName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+                <td mat-cell *matCellDef="let l">{{ l.category }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Statut</th>
+                <td mat-cell *matCellDef="let l"><app-status-badge [status]="l.status"></app-status-badge></td>
+            </ng-container>
+            <ng-container matColumnDef="payment">
+                <th mat-header-cell *matHeaderCellDef>Paiement</th>
+                <td mat-cell *matCellDef="let l"><app-status-badge [status]="l.paymentStatus"></app-status-badge></td>
+            </ng-container>
+            <ng-container matColumnDef="expiry">
+                <th mat-header-cell *matHeaderCellDef>Expiration</th>
+                <td mat-cell *matCellDef="let l" class="expiry-date">{{ l.expiryDate | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let l">
+                    <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                    <mat-menu #menu="matMenu">
+                        <a mat-menu-item [routerLink]="['/app/licenses', l.id]"><mat-icon>visibility</mat-icon> Voir</a>
+                        @if (l.status === 'pending') {
+                        <button mat-menu-item class="approve-btn"
+                            (click)="approve(l.id)"><mat-icon>check_circle</mat-icon> Approuver</button>
+                        <button mat-menu-item class="reject-btn" (click)="reject(l.id)"><mat-icon>cancel</mat-icon>
+                            Refuser</button>
+                        }
+                    </mat-menu>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="cols"></tr>
+            <tr mat-row *matRowDef="let row; columns: cols;" class="table-row"></tr>
+        </table>
+    </div>
+    }
+</mat-card>

@@ -1,0 +1,143 @@
+<app-page-header title="Annuaire des Profils" subtitle="Consultez et recherchez les profils sportifs des membres"
+    icon="recent_actors" [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'}, {label:'Profils'}]">
+</app-page-header>
+
+<!-- Filters Bar -->
+<mat-card class="filter-card">
+    <div class="filters">
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Rechercher un profil...</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" placeholder="Nom, prénom..." />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Rôle</mat-label>
+            <mat-select [(ngModel)]="selectedRole" (ngModelChange)="applyFilter()">
+                @for (role of roles; track role.value) {
+                <mat-option [value]="role.value">{{ role.label }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Club</mat-label>
+            <mat-select [(ngModel)]="selectedClub" (ngModelChange)="applyFilter()">
+                @for (club of clubs; track club.value) {
+                <mat-option [value]="club.value">{{ club.label }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Catégorie</mat-label>
+            <mat-select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilter()">
+                @for (cat of categories; track cat.value) {
+                <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon> Réinitialiser
+        </button>
+    </div>
+    <div class="filter-info">
+        <mat-icon>info_outline</mat-icon>
+        {{ filteredUsers.length }} profil(s) trouvé(s)
+    </div>
+</mat-card>
+
+<!-- Table -->
+<mat-card class="table-card">
+    @if (loading()) {
+    <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Chargement des profils...</p>
+    </div>
+    } @else {
+    <div class="table-responsive">
+        <table mat-table [dataSource]="filteredUsers" class="users-table">
+            <!-- Avatar -->
+            <ng-container matColumnDef="avatar">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let user">
+                    <div class="user-avatar" [style.background-color]="roleColors[user.role] + '20'"
+                        [style.color]="roleColors[user.role]">
+                        {{ getInitials(user) }}
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Name -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Identité</th>
+                <td mat-cell *matCellDef="let user">
+                    <div class="user-name-cell">
+                        <span class="user-fullname">{{ user.firstName }} {{ user.lastName }}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Role -->
+            <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef>Rôle Sportif</th>
+                <td mat-cell *matCellDef="let user">
+                    <span class="role-chip" [style.background-color]="roleColors[user.role] + '20'"
+                        [style.color]="roleColors[user.role]">
+                        {{ roleLabels[user.role] }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Club -->
+            <ng-container matColumnDef="club">
+                <th mat-header-cell *matHeaderCellDef>Club affilié</th>
+                <td mat-cell *matCellDef="let user">
+                    <span class="club-cell">{{ user.clubName || '—' }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Category -->
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+                <td mat-cell *matCellDef="let user">
+                    <span class="category-cell">{{ getCategoryPlaceholder(user) }}</span>
+                </td>
+            </ng-container>
+
+            <!-- License -->
+            <ng-container matColumnDef="license">
+                <th mat-header-cell *matHeaderCellDef>Licence</th>
+                <td mat-cell *matCellDef="let user">
+                    <app-status-badge *ngIf="getLicenseStatusPlaceholder(user) !== 'none'"
+                        [status]="getLicenseStatusPlaceholder(user)"></app-status-badge>
+                    <span *ngIf="getLicenseStatusPlaceholder(user) === 'none'" class="no-license">—</span>
+                </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let user">
+                    <div class="actions-cell">
+                        <a mat-stroked-button color="primary" [routerLink]="['/app/profiles', user.id]">
+                            Voir le profil
+                        </a>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row hoverable"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td [attr.colspan]="displayedColumns.length" class="no-data">
+                    <mat-icon>search_off</mat-icon>
+                    <p>Aucun profil trouvé avec ces filtres</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    }
+</mat-card>

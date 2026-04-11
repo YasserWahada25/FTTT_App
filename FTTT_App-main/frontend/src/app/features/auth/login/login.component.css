@@ -1,0 +1,85 @@
+:host ::ng-deep .auth-panel h2 {
+  margin-bottom: 6px;
+}
+
+:host ::ng-deep .auth-stack {
+  margin-top: 12px;
+}
+
+.auth-stack--login {
+  gap: 14px;
+}
+
+.login-access-card,
+.login-register-section {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(15, 78, 167, 0.08);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.96) 0%, #ffffff 100%);
+}
+
+.login-register-section {
+  gap: 14px;
+}
+
+.login-register-section__title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0f4ea7;
+}
+
+.login-form {
+  margin: 0;
+}
+
+.login-form-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border-radius: 16px;
+  border: 1px dashed rgba(15, 78, 167, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.login-submit {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.98rem !important;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(15, 78, 167, 0.28);
+}
+
+.login-submit mat-spinner {
+  display: inline-block;
+}
+
+.login-submit ::ng-deep circle {
+  stroke: #ffffff !important;
+}
+
+.auth-link-card--player {
+  border-top: 3px solid #0f4ea7;
+}
+
+.auth-link-card--staff {
+  border-top: 3px solid #d3a128;
+}
+
+/* Cartes inscription compactes : pas de paragraphe */
+.auth-stack--login .auth-link-card {
+  gap: 6px;
+  padding: 16px;
+}
+
+.auth-stack--login .auth-link-card__footer {
+  margin-top: 4px;
+}

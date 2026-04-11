@@ -1,0 +1,104 @@
+<app-auth-shell title="Connexion" [eyebrow]="''" [subtitle]="''">
+  <div class="auth-stack auth-stack--login">
+    @if (infoMessage()) {
+      <div class="app-banner app-banner--info">
+        <mat-icon>info</mat-icon>
+        <span>{{ infoMessage() }}</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="app-banner app-banner--error">
+        <mat-icon>error</mat-icon>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <section class="login-access-card">
+      @if (checkingSession()) {
+        <div class="login-form-loading">
+          <mat-spinner diameter="34"></mat-spinner>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form-grid login-form">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Identifiant ou e-mail</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="username" autocomplete="username" />
+            @if (hasError('username', 'required')) {
+              <mat-error>Requis</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Mot de passe</mat-label>
+            <mat-icon matPrefix>lock</mat-icon>
+            <input
+              matInput
+              [type]="hidePassword() ? 'password' : 'text'"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="hidePassword() ? 'Afficher le mot de passe' : 'Masquer le mot de passe'"
+            >
+              <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            @if (hasError('password', 'required')) {
+              <mat-error>Requis</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="login-submit"
+            [disabled]="submitting()"
+          >
+            @if (submitting()) {
+              <mat-spinner diameter="22"></mat-spinner>
+            } @else {
+              Se connecter
+            }
+          </button>
+        </form>
+      }
+    </section>
+
+    <section class="login-register-section">
+      <h3 class="login-register-section__title">Inscription</h3>
+      <div class="auth-link-grid">
+        <a routerLink="/auth/register/player" class="auth-link-card auth-link-card--player">
+          <div class="auth-link-card__top">
+            <div class="auth-link-card__icon">
+              <mat-icon>sports_tennis</mat-icon>
+            </div>
+          </div>
+          <span class="auth-link-card__eyebrow">Joueur</span>
+          <span class="auth-link-card__title">Creer un compte joueur</span>
+          <span class="auth-link-card__footer">Continuer</span>
+        </a>
+
+        <a routerLink="/auth/register/staff" class="auth-link-card auth-link-card--staff">
+          <div class="auth-link-card__top">
+            <div class="auth-link-card__icon auth-link-card__icon--alt">
+              <mat-icon>workspace_premium</mat-icon>
+            </div>
+          </div>
+          <span class="auth-link-card__eyebrow">Staff</span>
+          <span class="auth-link-card__title">Demande de compte staff</span>
+          <span class="auth-link-card__footer">Continuer</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="auth-inline-links">
+      <a routerLink="/auth/forgot-password">Mot de passe oublie ?</a>
+    </div>
+  </div>
+</app-auth-shell>

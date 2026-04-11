@@ -1,0 +1,157 @@
+<app-page-header
+    [title]="getGreeting() + ', ' + (currentUser?.firstName || 'Bienvenue')"
+    subtitle="Tableau de bord de la Fédération Tunisienne de Tennis de Table"
+    icon="dashboard"
+></app-page-header>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+    @for (kpi of kpis; track kpi.label) {
+    <div class="kpi-card" [style.border-top-color]="kpi.color">
+        <div class="kpi-icon" [style.background]="kpi.bg" [style.color]="kpi.color">
+            <mat-icon>{{ kpi.icon }}</mat-icon>
+        </div>
+        <div class="kpi-content">
+            <div class="kpi-value">{{ kpi.value }}</div>
+            <div class="kpi-label">{{ kpi.label }}</div>
+            <div class="kpi-change" [class.trend-up]="kpi.trend === 'up'" [class.trend-alert]="kpi.trend === 'alert'">
+                <mat-icon>{{ kpi.trend === 'up' ? 'trending_up' : kpi.trend === 'alert' ? 'warning' : 'info'
+                    }}</mat-icon>
+                {{ kpi.change }}
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+<div class="dashboard-grid">
+    <!-- Recent Matches -->
+    <mat-card class="dash-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="card-icon">sports</mat-icon>
+            <mat-card-title>Résultats Récents</mat-card-title>
+            <mat-card-subtitle>Derniers matchs joués</mat-card-subtitle>
+            <span class="card-header-spacer"></span>
+            <a mat-button color="primary" routerLink="/app/matches">Voir tout</a>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <div class="matches-list">
+                @for (match of recentMatches; track match.home) {
+                <div class="match-row">
+                    <div class="match-teams">
+                        <span class="team home">{{ match.home }}</span>
+                        <span class="match-score">{{ match.score }}</span>
+                        <span class="team away">{{ match.away }}</span>
+                    </div>
+                    <div class="match-meta">
+                        <span class="competition-name">{{ match.competition }}</span>
+                        <app-status-badge [status]="match.status"></app-status-badge>
+                    </div>
+                </div>
+                }
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Upcoming Competitions -->
+    <mat-card class="dash-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="card-icon competitions">emoji_events</mat-icon>
+            <mat-card-title>Compétitions à Venir</mat-card-title>
+            <mat-card-subtitle>Inscriptions ouvertes</mat-card-subtitle>
+            <span class="card-header-spacer"></span>
+            <a mat-button color="primary" routerLink="/app/competitions">Voir tout</a>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <div class="competitions-list">
+                @for (comp of upcomingCompetitions; track comp.name) {
+                <div class="comp-row">
+                    <div class="comp-info">
+                        <div class="comp-name">{{ comp.name }}</div>
+                        <div class="comp-date">
+                            <mat-icon class="small-icon">event</mat-icon>
+                            {{ comp.date | date:'dd MMM yyyy' }}
+                        </div>
+                    </div>
+                    <div class="comp-meta">
+                        <app-status-badge [status]="comp.status"></app-status-badge>
+                        <div class="comp-participants">
+                            <mat-icon class="small-icon">group</mat-icon>
+                            {{ comp.participants }}/{{ comp.max }}
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- License Stats -->
+    <mat-card class="dash-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="card-icon licenses">badge</mat-icon>
+            <mat-card-title>Licences par Statut</mat-card-title>
+            <mat-card-subtitle>Saison 2024-2025</mat-card-subtitle>
+            <span class="card-header-spacer"></span>
+            <a mat-button color="primary" routerLink="/app/licenses">Gérer</a>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <div class="license-stats">
+                @for (stat of licenseStats; track stat.label) {
+                <div class="license-stat-row">
+                    <div class="license-stat-label">
+                        <span class="stat-dot" [style.background]="stat.color"></span>
+                        {{ stat.label }}
+                    </div>
+                    <div class="license-stat-bar">
+                        <div class="bar-fill" [style.width.%]="(stat.value / 5590) * 100"
+                            [style.background]="stat.color"></div>
+                    </div>
+                    <span class="license-stat-value" [style.color]="stat.color">{{ stat.value | number }}</span>
+                </div>
+                }
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Quick Actions -->
+    <mat-card class="dash-card">
+        <mat-card-header>
+            <mat-icon mat-card-avatar class="card-icon">flash_on</mat-icon>
+            <mat-card-title>Actions Rapides</mat-card-title>
+            <mat-card-subtitle>Raccourcis fréquents</mat-card-subtitle>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <div class="quick-actions">
+                <a class="quick-action" routerLink="/app/licenses/new">
+                    <mat-icon>add_card</mat-icon>
+                    <span>Nouvelle Licence</span>
+                </a>
+                <a class="quick-action" routerLink="/app/competitions/new">
+                    <mat-icon>add_task</mat-icon>
+                    <span>Nouvelle Compétition</span>
+                </a>
+                <a class="quick-action" routerLink="/app/clubs/new">
+                    <mat-icon>group_add</mat-icon>
+                    <span>Nouveau Club</span>
+                </a>
+                <a class="quick-action" routerLink="/app/users/new">
+                    <mat-icon>person_add</mat-icon>
+                    <span>Nouvel Utilisateur</span>
+                </a>
+                <a class="quick-action" routerLink="/app/venues/new">
+                    <mat-icon>add_location</mat-icon>
+                    <span>Nouveau Terrain</span>
+                </a>
+                <a class="quick-action" routerLink="/app/rankings">
+                    <mat-icon>leaderboard</mat-icon>
+                    <span>Classements</span>
+                </a>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

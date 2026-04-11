@@ -1,0 +1,237 @@
+<app-page-header
+  title="Mon Profil"
+  subtitle="Consultez et modifiez vos informations personnelles."
+  icon="person"
+  [breadcrumbs]="[{ label: 'Tableau de Bord', route: '/app/dashboard' }, { label: 'Mon Profil' }]"
+  [actions]="headerActions"
+>
+</app-page-header>
+
+@if (loading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else if (currentUser) {
+  <div class="profile-layout">
+    <div class="sidebar-column">
+      <mat-card class="identity-card">
+        <div class="identity-header">
+          <div
+            class="avatar-large"
+            [style.background-color]="getRoleColor(currentUser.role) + '20'"
+            [style.color]="getRoleColor(currentUser.role)"
+          >
+            {{ getInitials() }}
+          </div>
+          <h2 class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
+          <span
+            class="role-badge"
+            [style.background-color]="getRoleColor(currentUser.role) + '20'"
+            [style.color]="getRoleColor(currentUser.role)"
+          >
+            {{ getRoleLabel(currentUser.role) }}
+          </span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="identity-body">
+          <div class="info-row">
+            <mat-icon>mail</mat-icon>
+            <span>{{ currentUser.email }}</span>
+          </div>
+
+          <div class="info-row">
+            <mat-icon>phone</mat-icon>
+            <span>{{ displayPhone }}</span>
+          </div>
+
+          <div class="info-row">
+            <mat-icon>business</mat-icon>
+            <span class="highlight">{{ currentUser.clubName || 'Aucun club affilie' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="identity-footer form-group-toggle">
+          <mat-slide-toggle [checked]="isPublic()" (change)="togglePrivacy()" color="primary">
+            Profil {{ isPublic() ? 'Public' : 'Prive' }}
+          </mat-slide-toggle>
+          <mat-icon
+            class="privacy-icon"
+            [matTooltip]="
+              isPublic()
+                ? 'Visible par les autres membres'
+                : 'Seulement visible par vous et l administration'
+            "
+          >
+            {{ isPublic() ? 'public' : 'lock' }}
+          </mat-icon>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="main-column">
+      <mat-card class="section-card mb-24">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>badge</mat-icon>
+            Informations personnelles
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content class="pt-16">
+          @if (!editing()) {
+            <div class="identity-grid">
+              <div class="identity-grid__item">
+                <span class="identity-grid__label">Prenom</span>
+                <strong>{{ currentUser.firstName }}</strong>
+              </div>
+
+              <div class="identity-grid__item">
+                <span class="identity-grid__label">Nom</span>
+                <strong>{{ currentUser.lastName }}</strong>
+              </div>
+
+              <div class="identity-grid__item">
+                <span class="identity-grid__label">Email</span>
+                <strong>{{ currentUser.email }}</strong>
+              </div>
+
+              <div class="identity-grid__item">
+                <span class="identity-grid__label">Telephone</span>
+                <strong>{{ displayPhone }}</strong>
+              </div>
+            </div>
+          } @else {
+            <form class="profile-form" [formGroup]="form" (ngSubmit)="saveProfile()">
+              <div class="form-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Prenom</mat-label>
+                  <mat-icon matPrefix>person</mat-icon>
+                  <input matInput formControlName="firstName" />
+                  @if (hasError('firstName', 'required')) {
+                    <mat-error>Le prenom est obligatoire.</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Nom</mat-label>
+                  <mat-icon matPrefix>badge</mat-icon>
+                  <input matInput formControlName="lastName" />
+                  @if (hasError('lastName', 'required')) {
+                    <mat-error>Le nom est obligatoire.</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <mat-icon matPrefix>mail</mat-icon>
+                  <input matInput type="email" formControlName="email" />
+                  @if (hasError('email', 'required')) {
+                    <mat-error>L email est obligatoire.</mat-error>
+                  }
+                  @if (hasError('email', 'email')) {
+                    <mat-error>Veuillez saisir une adresse email valide.</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Telephone</mat-label>
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <input matInput formControlName="phone" placeholder="+216 XX XXX XXX" />
+                  @if (hasError('phone', 'maxlength')) {
+                    <mat-error>Le numero de telephone est trop long.</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="form-actions">
+                <button mat-stroked-button type="button" (click)="cancelEdit()">Annuler</button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+                  @if (saving()) {
+                    <mat-spinner diameter="18"></mat-spinner>
+                  } @else {
+                    <mat-icon>save</mat-icon>
+                  }
+                  <span>Enregistrer les modifications</span>
+                </button>
+              </div>
+            </form>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="section-card mb-24">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>badge</mat-icon>
+            A propos
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pt-16">
+          <p class="bio-text">{{ profile?.bio || 'Aucune biographie renseignee.' }}</p>
+
+          <div class="tags-section mt-16" *ngIf="profile?.skills?.length">
+            <h4 class="section-subtitle">Competences / Style de jeu</h4>
+            <mat-chip-set>
+              @for (skill of profile?.skills; track skill) {
+                <mat-chip>{{ skill }}</mat-chip>
+              }
+            </mat-chip-set>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="cards-grid">
+        <mat-card class="section-card half-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon class="icon-primary">credit_card</mat-icon>
+              Licence
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="pt-16">
+            <div class="license-display">
+              <div class="license-status">
+                Statut actuel:
+                <app-status-badge status="active"></app-status-badge>
+              </div>
+              <div class="license-number">No. 2024-{{ currentUser.id.padStart(5, '0') }}</div>
+              <div class="license-validity">Valable jusqu'au 31/08/2025</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="section-card half-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon class="icon-accent">leaderboard</mat-icon>
+              Statistiques Sportives
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="pt-16">
+            <div class="stats-grid">
+              <div class="stat-box">
+                <span class="stat-lbl">Points</span>
+                <span class="stat-val highlight-val">{{ profile?.stats?.points || 0 }}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-lbl">Classement</span>
+                <span class="stat-val">#{{ profile?.stats?.ranking || '-' }}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-lbl">Matchs (V/D)</span>
+                <span class="stat-val">
+                  <span class="text-success">{{ profile?.stats?.wins || 0 }}</span> -
+                  <span class="text-danger">{{ profile?.stats?.losses || 0 }}</span>
+                </span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+}

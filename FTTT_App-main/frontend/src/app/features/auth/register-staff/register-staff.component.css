@@ -1,0 +1,8 @@
+mat-form-field {
+  width: 100%;
+}
+
+.auth-form-actions button,
+.auth-form-actions a {
+  min-width: 190px;
+}

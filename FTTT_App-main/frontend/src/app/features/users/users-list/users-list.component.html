@@ -1,0 +1,259 @@
+<app-page-header
+  title="Administration des comptes"
+  subtitle="Activez les demandes staff, consultez les comptes de la plateforme et creez des comptes actifs."
+  icon="manage_accounts"
+  [breadcrumbs]="[{ label: 'Tableau de Bord', route: '/app/dashboard' }, { label: 'Utilisateurs' }]"
+  [actions]="[
+    { label: 'Actualiser', icon: 'refresh', variant: 'stroked', action: loadData.bind(this) },
+    { label: 'Nouveau compte actif', icon: 'person_add', action: openCreateUser.bind(this) }
+  ]"
+></app-page-header>
+
+<div class="users-admin-grid">
+  <section class="summary-grid">
+    <mat-card class="summary-card summary-card--active">
+      <span class="summary-card__label">Comptes actifs</span>
+      <strong>{{ activeUsersCount }}</strong>
+      <span>Comptes actuellement operationnels</span>
+    </mat-card>
+
+    <mat-card class="summary-card summary-card--inactive">
+      <span class="summary-card__label">Comptes inactifs</span>
+      <strong>{{ inactiveUsersCount }}</strong>
+      <span>Comptes desactives ou non actifs</span>
+    </mat-card>
+
+    <mat-card class="summary-card summary-card--pending">
+      <span class="summary-card__label">Demandes en attente</span>
+      <strong>{{ pendingRequestsCount }}</strong>
+      <span>Demandes staff a traiter par l admin federation</span>
+    </mat-card>
+  </section>
+
+  <mat-card class="filter-card">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Rechercher un compte</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilter()"
+          placeholder="Nom, username ou email"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Role</mat-label>
+        <mat-select [(ngModel)]="selectedRole" (ngModelChange)="applyFilter()">
+          @for (role of roles; track role.value) {
+            <mat-option [value]="role.value">{{ role.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Statut</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilter()">
+          @for (status of statuses; track status.value) {
+            <mat-option [value]="status.value">{{ status.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button type="button" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Reinitialiser
+      </button>
+    </div>
+  </mat-card>
+
+  @if (loading()) {
+    <mat-card class="state-card">
+      <mat-spinner diameter="42"></mat-spinner>
+      <p>Chargement des donnees administrateur...</p>
+    </mat-card>
+  } @else {
+    <mat-card class="table-card">
+      <div class="section-head">
+        <div>
+          <h2>Comptes de la plateforme</h2>
+          <p>{{ filteredUsers.length }} compte(s) correspondant aux filtres.</p>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table mat-table [dataSource]="filteredUsers" class="users-table">
+          <ng-container matColumnDef="avatar">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let user">
+              <div
+                class="user-avatar"
+                [style.background-color]="roleColors[user.role] + '18'"
+                [style.color]="roleColors[user.role]"
+              >
+                {{ getInitials(user) }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let user">
+              <div class="identity-cell">
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let user">
+              <span class="muted-cell">{{ user.username || '-' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let user">
+              <span class="muted-cell">{{ user.email }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef>Role</th>
+            <td mat-cell *matCellDef="let user">
+              <span
+                class="role-chip"
+                [style.background-color]="roleColors[user.role] + '18'"
+                [style.color]="roleColors[user.role]"
+              >
+                {{ getRoleLabel(user.role) }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let user">
+              <app-status-badge [status]="user.status"></app-status-badge>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Cree le</th>
+            <td mat-cell *matCellDef="let user">
+              <span class="muted-cell">{{ user.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let user">
+              <button
+                mat-icon-button
+                type="button"
+                matTooltip="Voir le detail"
+                (click)="openDetails(user)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: userColumns"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="no-data" [attr.colspan]="userColumns.length">
+              <mat-icon>search_off</mat-icon>
+              <p>Aucun compte ne correspond aux filtres actuels.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-card>
+
+    <mat-card class="table-card">
+      <div class="section-head">
+        <div>
+          <h2>Demandes staff en attente</h2>
+          <p>Approuvez ou refusez les comptes Club Manager, Coach et Referee.</p>
+        </div>
+      </div>
+
+      @if (pendingRequests.length) {
+        <div class="table-responsive">
+          <table mat-table [dataSource]="pendingRequests" class="users-table">
+            <ng-container matColumnDef="username">
+              <th mat-header-cell *matHeaderCellDef>Username</th>
+              <td mat-cell *matCellDef="let request">{{ request.username }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let request">{{ request.email }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="requestedRole">
+              <th mat-header-cell *matHeaderCellDef>Role demande</th>
+              <td mat-cell *matCellDef="let request">
+                <span
+                  class="role-chip"
+                  [style.background-color]="roleColors[request.requestedRole] + '18'"
+                  [style.color]="roleColors[request.requestedRole]"
+                >
+                  {{ getRoleLabel(request.requestedRole) }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Statut</th>
+              <td mat-cell *matCellDef="let request">
+                <app-status-badge [status]="request.status"></app-status-badge>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let request">
+                <div class="request-actions">
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    type="button"
+                    [disabled]="isRequestProcessing(request.id)"
+                    (click)="approveRequest(request)"
+                  >
+                    <mat-icon>check_circle</mat-icon>
+                    Approuver
+                  </button>
+
+                  <button
+                    mat-stroked-button
+                    color="warn"
+                    type="button"
+                    [disabled]="isRequestProcessing(request.id)"
+                    (click)="rejectRequest(request)"
+                  >
+                    <mat-icon>cancel</mat-icon>
+                    Refuser
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="pendingColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: pendingColumns"></tr>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>task_alt</mat-icon>
+          <p>Aucune demande staff en attente pour le moment.</p>
+        </div>
+      }
+    </mat-card>
+  }
+</div>
