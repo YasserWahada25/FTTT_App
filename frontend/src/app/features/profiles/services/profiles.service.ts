@@ -1,95 +1,25 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { AuthService } from '../../../core/services/auth.service';
+import { delay } from 'rxjs/operators';
 import { Profile } from '../../../core/models/profile.model';
 
-interface ProfileApiResponse {
-  id: number;
-  userId: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  category?: string;
-  bio?: string;
-  skills?: string[];
-  achievements?: string[];
-  publicProfile?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  stats?: {
-    ranking?: number;
-    points?: number;
-    wins?: number;
-    losses?: number;
-    matchesPlayed?: number;
-  };
-}
+const MOCK_PROFILES: Profile[] = [
+    { id: '1', userId: '1', bio: 'Administrateur de la FTTT. Passionné de Tennis de Table depuis 20 ans.', skills: ['Management', 'Organisation', 'Arbitrage'], achievements: ['Organisation Championnat 2024'], stats: { ranking: 0, matchesPlayed: 0, wins: 0, losses: 0 } },
+    { id: '4', userId: '4', bio: 'Joueur professionnel au Stade Tunisien. Triple champion national.', skills: ['Top spin', 'Service court', 'Vitesse'], achievements: ['Vainqueur Coupe de Tunisie 2023', 'Médaillé Or Jeux Arabes'], stats: { ranking: 2450, matchesPlayed: 50, wins: 42, losses: 8 } },
+    { id: '8', userId: '8', bio: 'Jeune espoir du Club Sfax TT.', skills: ['Régularité', 'Revers'], achievements: ['Champion Regional Junior 2024'], stats: { ranking: 2210, matchesPlayed: 50, wins: 38, losses: 12 } },
+];
 
 @Injectable({ providedIn: 'root' })
 export class ProfilesService {
-  constructor(
-    private readonly http: HttpClient,
-    private readonly authService: AuthService
-  ) {}
-
-  getById(id: string): Observable<Profile | undefined> {
-    return this.http
-      .get<ProfileApiResponse>(`/api/profiles/user/${id}`)
-      .pipe(
-        map((profile) => this.mapProfile(profile)),
-        catchError(() => of(undefined))
-      );
-  }
-
-  getMyProfile(): Observable<Profile | undefined> {
-    const currentUser = this.authService.currentUser;
-    if (!currentUser) {
-      return of(undefined);
+    getById(id: string): Observable<Profile | undefined> {
+        return of(MOCK_PROFILES.find(p => p.id === id || p.userId === id)).pipe(delay(200));
     }
-
-    return this.getById(currentUser.id);
-  }
-
-  update(id: string, data: Partial<Profile>): Observable<Profile> {
-    return this.http
-      .put<ProfileApiResponse>(`/api/profiles/user/${id}`, {
-        bio: data.bio,
-        skills: data.skills ?? [],
-        achievements: data.achievements ?? [],
-        stats: data.stats ?? {},
-      })
-      .pipe(map((profile) => this.mapProfile(profile)));
-  }
-
-  updateVisibility(userId: string, publicProfile: boolean): Observable<Profile> {
-    return this.http
-      .patch<ProfileApiResponse>(`/api/profiles/user/${userId}/visibility`, { publicProfile })
-      .pipe(map((profile) => this.mapProfile(profile)));
-  }
-
-  private mapProfile(profile: ProfileApiResponse): Profile {
-    return {
-      id: String(profile.id),
-      userId: profile.userId,
-      name: profile.name,
-      email: profile.email,
-      phone: profile.phone,
-      category: profile.category,
-      bio: profile.bio,
-      skills: profile.skills ?? [],
-      achievements: profile.achievements ?? [],
-      publicProfile: profile.publicProfile,
-      stats: {
-        ranking: profile.stats?.ranking,
-        points: profile.stats?.points,
-        wins: profile.stats?.wins,
-        losses: profile.stats?.losses,
-        matchesPlayed: profile.stats?.matchesPlayed,
-      },
-      createdAt: profile.createdAt,
-      updatedAt: profile.updatedAt,
-    };
-  }
+    getMyProfile(): Observable<Profile | undefined> {
+        return of(MOCK_PROFILES[0]).pipe(delay(200)); // Mock auth user profile
+    }
+    update(id: string, data: Partial<Profile>): Observable<Profile> {
+        const idx = MOCK_PROFILES.findIndex(p => p.id === id);
+        if (idx >= 0) MOCK_PROFILES[idx] = { ...MOCK_PROFILES[idx], ...data };
+        return of(MOCK_PROFILES[idx]).pipe(delay(400));
+    }
 }

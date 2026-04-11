@@ -1,24 +1,45 @@
 package com.FTTTApp.club_service.Service;
 
 import com.FTTTApp.club_service.Client.TerrainClient;
-import com.FTTTApp.club_service.Client.TerrainDTO;
+import com.FTTTApp.club_service.Config.RabbitMQConfig;
+import com.FTTTApp.club_service.DTO.TerrainDTO;
+import com.FTTTApp.club_service.DTO.TerrainEventDTO;
 import com.FTTTApp.club_service.Entity.Club;
 import com.FTTTApp.club_service.Repository.ClubRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-
 public class ClubService {
+
     @Autowired
     private ClubRepository clubRepository;
+
     @Autowired
     private TerrainClient terrainClient;
 
+    // Injection du RabbitTemplate pour envoyer des messages
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     public Club createClub(Club club) {
-        return clubRepository.save(club);
+        // 1. On sauvegarde d'abord le club dans la base de données
+        Club savedClub = clubRepository.save(club);
+
+        // 2. On notifie le Terrain-Service via RabbitMQ de manière asynchrone
+        try {
+            TerrainEventDTO event = new TerrainEventDTO("Un nouveau club a été créé !", savedClub.getId());
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, event);
+            System.out.println("========== MESSAGE ENVOYÉ À RABBITMQ POUR LE CLUB ID: " + savedClub.getId() + " ==========");
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'envoi du message RabbitMQ : " + e.getMessage());
+            // On ne bloque pas la création du club si RabbitMQ a un souci
+        }
+
+        return savedClub;
     }
 
     public List<Club> getAllClubs() {
@@ -60,7 +81,7 @@ public class ClubService {
             // Appeler le service Terrain via Feign
             return terrainClient.getTerrainsDisponibles();
         } catch (Exception e) {
-            System.err.println("Erreur lors de l'appel à Terrain-service"+ e);
+            System.err.println("Erreur lors de l'appel à Terrain-service : " + e.getMessage());
             return List.of();
         }
     }

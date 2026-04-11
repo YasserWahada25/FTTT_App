@@ -1,5 +1,6 @@
 package com.FTTTApp.club_service.Client;
 
+import com.FTTTApp.club_service.DTO.TerrainDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

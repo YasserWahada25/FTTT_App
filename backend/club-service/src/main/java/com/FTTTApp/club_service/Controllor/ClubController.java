@@ -1,9 +1,8 @@
 package com.FTTTApp.club_service.Controllor;
 
-import com.FTTTApp.club_service.Client.TerrainDTO;
+import com.FTTTApp.club_service.DTO.TerrainDTO;
 import com.FTTTApp.club_service.Entity.Club;
 import com.FTTTApp.club_service.Service.ClubService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,104 +1,114 @@
-<app-auth-shell title="Connexion" [eyebrow]="''" [subtitle]="''">
-  <div class="auth-stack auth-stack--login">
-    @if (infoMessage()) {
-      <div class="app-banner app-banner--info">
-        <mat-icon>info</mat-icon>
-        <span>{{ infoMessage() }}</span>
-      </div>
-    }
-
-    @if (errorMessage()) {
-      <div class="app-banner app-banner--error">
-        <mat-icon>error</mat-icon>
-        <span>{{ errorMessage() }}</span>
-      </div>
-    }
-
-    <section class="login-access-card">
-      @if (checkingSession()) {
-        <div class="login-form-loading">
-          <mat-spinner diameter="34"></mat-spinner>
+<div class="login-page">
+    <!-- Left: Branding -->
+    <div class="login-branding">
+        <div class="branding-content">
+            <div class="federation-logo">
+                <mat-icon>sports_tennis</mat-icon>
+            </div>
+            <h1>FTTT</h1>
+            <h2>Fédération Tunisienne<br />de Tennis de Table</h2>
+            <p class="branding-desc">
+                Plateforme de gestion officielle des clubs, licences, compétitions et classements nationaux.
+            </p>
+            <div class="branding-stats">
+                <div class="stat">
+                    <span class="stat-value">120+</span>
+                    <span class="stat-label">Clubs</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">5000+</span>
+                    <span class="stat-label">Licenciés</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">200+</span>
+                    <span class="stat-label">Compétitions/an</span>
+                </div>
+            </div>
         </div>
-      } @else {
-        <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form-grid login-form">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Identifiant ou e-mail</mat-label>
-            <mat-icon matPrefix>person</mat-icon>
-            <input matInput formControlName="username" autocomplete="username" />
-            @if (hasError('username', 'required')) {
-              <mat-error>Requis</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Mot de passe</mat-label>
-            <mat-icon matPrefix>lock</mat-icon>
-            <input
-              matInput
-              [type]="hidePassword() ? 'password' : 'text'"
-              formControlName="password"
-              autocomplete="current-password"
-            />
-            <button
-              mat-icon-button
-              matSuffix
-              type="button"
-              (click)="togglePasswordVisibility()"
-              [attr.aria-label]="hidePassword() ? 'Afficher le mot de passe' : 'Masquer le mot de passe'"
-            >
-              <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
-            </button>
-            @if (hasError('password', 'required')) {
-              <mat-error>Requis</mat-error>
-            }
-          </mat-form-field>
-
-          <button
-            mat-flat-button
-            color="primary"
-            type="submit"
-            class="login-submit"
-            [disabled]="submitting()"
-          >
-            @if (submitting()) {
-              <mat-spinner diameter="22"></mat-spinner>
-            } @else {
-              Se connecter
-            }
-          </button>
-        </form>
-      }
-    </section>
-
-    <section class="login-register-section">
-      <h3 class="login-register-section__title">Inscription</h3>
-      <div class="auth-link-grid">
-        <a routerLink="/auth/register/player" class="auth-link-card auth-link-card--player">
-          <div class="auth-link-card__top">
-            <div class="auth-link-card__icon">
-              <mat-icon>sports_tennis</mat-icon>
-            </div>
-          </div>
-          <span class="auth-link-card__eyebrow">Joueur</span>
-          <span class="auth-link-card__title">Creer un compte joueur</span>
-          <span class="auth-link-card__footer">Continuer</span>
-        </a>
-
-        <a routerLink="/auth/register/staff" class="auth-link-card auth-link-card--staff">
-          <div class="auth-link-card__top">
-            <div class="auth-link-card__icon auth-link-card__icon--alt">
-              <mat-icon>workspace_premium</mat-icon>
-            </div>
-          </div>
-          <span class="auth-link-card__eyebrow">Staff</span>
-          <span class="auth-link-card__title">Demande de compte staff</span>
-          <span class="auth-link-card__footer">Continuer</span>
-        </a>
-      </div>
-    </section>
-
-    <div class="auth-inline-links">
-      <a routerLink="/auth/forgot-password">Mot de passe oublie ?</a>
     </div>
-  </div>
-</app-auth-shell>
+
+    <!-- Right: Login Form -->
+    <div class="login-form-side">
+        <div class="form-container">
+            <div class="form-header">
+                <h3>Connexion</h3>
+                <p>Accédez à votre espace de gestion</p>
+            </div>
+
+            <!-- Demo Accounts -->
+            <div class="demo-accounts">
+                <p class="demo-label">Comptes démo :</p>
+                <div class="demo-chips">
+                    @for (account of demoAccounts; track account.email) {
+                    <button class="demo-chip" [style.border-color]="account.color" [style.color]="account.color"
+                        (click)="fillDemo(account)" type="button">
+                        {{ account.role }}
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+                <!-- Error -->
+                @if (error()) {
+                <div class="error-banner">
+                    <mat-icon>error_outline</mat-icon>
+                    {{ error() }}
+                </div>
+                }
+
+                <!-- Email -->
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Adresse email</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                    <input matInput type="email" formControlName="email" placeholder="votreemail@domaine.tn"
+                        autocomplete="email" />
+                    @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+                    <mat-error>L'email est requis</mat-error>
+                    }
+                    @if (loginForm.get('email')?.hasError('email')) {
+                    <mat-error>Email invalide</mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Password -->
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Mot de passe</mat-label>
+                    <mat-icon matPrefix>lock</mat-icon>
+                    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password"
+                        autocomplete="current-password" />
+                    <button mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())" type="button">
+                        <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
+                    @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+                    <mat-error>Le mot de passe est requis</mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Forgot Password -->
+                <div class="form-options">
+                    <a routerLink="/auth/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+                </div>
+
+                <!-- Submit -->
+                <button mat-flat-button color="primary" class="submit-btn" type="submit"
+                    [disabled]="loading() || loginForm.invalid">
+                    @if (loading()) {
+                    <mat-spinner diameter="20" color="accent"></mat-spinner>
+                    <span>Connexion en cours...</span>
+                    } @else {
+                    <ng-container>
+                        <mat-icon>login</mat-icon>
+                        <span>Se connecter</span>
+                    </ng-container>
+                    }
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <mat-icon class="security-icon">security</mat-icon>
+                <span>Connexion sécurisée · FTTT © {{ 2025 }}</span>
+            </div>
+        </div>
+    </div>
+</div>

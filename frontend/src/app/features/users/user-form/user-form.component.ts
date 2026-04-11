@@ -1,473 +1,158 @@
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { passwordMatchValidator } from '../../auth/validators/password-match.validator';
-import { AdminCreateUserRequest } from '../models/admin-user.model';
 import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterLink,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatSnackBarModule,
+    CommonModule, ReactiveFormsModule, RouterLink,
+    MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatButtonModule, MatIconModule, MatDividerModule,
     PageHeaderComponent,
   ],
   template: `
     <app-page-header
-      title="Nouveau compte actif"
-      subtitle="Creez directement un compte utilisateur actif depuis l espace administration."
-      icon="person_add"
-      [breadcrumbs]="[
-        { label: 'Tableau de Bord', route: '/app/dashboard' },
-        { label: 'Utilisateurs', route: '/app/users' },
-        { label: 'Nouveau compte actif' }
-      ]"
+      [title]="pageTitle"
+      [subtitle]="pageSubtitle"
+      icon="person"
+      [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'},{label:'Utilisateurs', route:'/app/users'},{label: isEdit ? 'Modifier' : 'Nouveau'}]"
     ></app-page-header>
 
-    <div class="create-user-grid">
-      <mat-card class="info-card">
-        <span class="eyebrow">Administration federation</span>
-        <h2>Creation immediate</h2>
-        <p>
-          Le compte cree depuis cet ecran est active immediatement. Utilisez plutot les demandes
-          staff en attente pour les inscriptions soumises par les clubs et les entraineurs.
-        </p>
+    <mat-card class="form-card">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Prénom</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="firstName" placeholder="Prénom" />
+          </mat-form-field>
 
-        <div class="info-points">
-          <div class="info-point">
-            <mat-icon>verified_user</mat-icon>
-            <span>Activation directe apres creation</span>
-          </div>
-          <div class="info-point">
-            <mat-icon>badge</mat-icon>
-            <span>Roles disponibles : Joueur, Responsable Club, Entraineur, Arbitre</span>
-          </div>
-          <div class="info-point">
-            <mat-icon>vpn_key</mat-icon>
-            <span>Un mot de passe initial est defini par l administrateur</span>
-          </div>
-        </div>
-      </mat-card>
+          <mat-form-field appearance="outline">
+            <mat-label>Nom</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="lastName" placeholder="Nom de famille" />
+          </mat-form-field>
 
-      <mat-card class="form-card">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-          <div class="form-head">
-            <div>
-              <span class="eyebrow">Compte plateforme</span>
-              <h2>Informations du compte</h2>
-              <p>Renseignez les informations obligatoires puis choisissez le role du compte.</p>
-            </div>
-          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input matInput formControlName="email" type="email" placeholder="email@domaine.tn" />
+          </mat-form-field>
 
-          @if (submitError()) {
-            <div class="feedback feedback--error">
-              <mat-icon>error</mat-icon>
-              <span>{{ submitError() }}</span>
-            </div>
-          }
+          <mat-form-field appearance="outline">
+            <mat-label>Téléphone</mat-label>
+            <mat-icon matPrefix>phone</mat-icon>
+            <input matInput formControlName="phone" placeholder="+216 XX XXX XXX" />
+          </mat-form-field>
 
-          <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Rôle</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <mat-select formControlName="role">
+              <mat-option value="ADMIN_FEDERATION">Admin Fédération</mat-option>
+              <mat-option value="CLUB_MANAGER">Responsable Club</mat-option>
+              <mat-option value="COACH">Entraîneur</mat-option>
+              <mat-option value="PLAYER">Joueur</mat-option>
+              <mat-option value="REFEREE">Arbitre</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Statut</mat-label>
+            <mat-icon matPrefix>toggle_on</mat-icon>
+            <mat-select formControlName="status">
+              <mat-option value="active">Actif</mat-option>
+              <mat-option value="inactive">Inactif</mat-option>
+              <mat-option value="suspended">Suspendu</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          @if (!isEdit) {
             <mat-form-field appearance="outline">
-              <mat-label>Nom d utilisateur</mat-label>
-              <mat-icon matPrefix>alternate_email</mat-icon>
-              <input matInput formControlName="username" placeholder="ex: joueur.club01" />
-              @if (hasError('username', 'required')) {
-                <mat-error>Le nom d utilisateur est obligatoire.</mat-error>
-              }
-              @if (hasError('username', 'minlength')) {
-                <mat-error>Le nom d utilisateur doit contenir au moins 3 caracteres.</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <mat-icon matPrefix>mail</mat-icon>
-              <input matInput type="email" formControlName="email" placeholder="nom@fttt.tn" />
-              @if (hasError('email', 'required')) {
-                <mat-error>L email est obligatoire.</mat-error>
-              }
-              @if (hasError('email', 'email')) {
-                <mat-error>Veuillez saisir une adresse email valide.</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Prenom</mat-label>
-              <mat-icon matPrefix>person</mat-icon>
-              <input matInput formControlName="firstName" placeholder="Prenom" />
-              @if (hasError('firstName', 'required')) {
-                <mat-error>Le prenom est obligatoire.</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Nom</mat-label>
-              <mat-icon matPrefix>badge</mat-icon>
-              <input matInput formControlName="lastName" placeholder="Nom" />
-              @if (hasError('lastName', 'required')) {
-                <mat-error>Le nom est obligatoire.</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Role</mat-label>
-              <mat-icon matPrefix>workspace_premium</mat-icon>
-              <mat-select formControlName="role">
-                @for (role of roleOptions; track role.value) {
-                  <mat-option [value]="role.value">{{ role.label }}</mat-option>
-                }
-              </mat-select>
-              @if (hasError('role', 'required')) {
-                <mat-error>Le role est obligatoire.</mat-error>
-              }
-            </mat-form-field>
-
-            <div class="role-hint-card">
-              <span class="role-hint-card__label">Activation</span>
-              <strong>{{ selectedRoleLabel() }}</strong>
-              <p>Le compte sera cree actif et pourra se connecter des sa creation.</p>
-            </div>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Mot de passe initial</mat-label>
+              <mat-label>Mot de passe</mat-label>
               <mat-icon matPrefix>lock</mat-icon>
-              <input matInput type="password" formControlName="password" placeholder="Au moins 6 caracteres" />
-              @if (hasError('password', 'required')) {
-                <mat-error>Le mot de passe est obligatoire.</mat-error>
-              }
-              @if (hasError('password', 'minlength')) {
-                <mat-error>Le mot de passe doit contenir au moins 6 caracteres.</mat-error>
-              }
+              <input matInput formControlName="password" type="password" />
             </mat-form-field>
+          }
+        </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Confirmation du mot de passe</mat-label>
-              <mat-icon matPrefix>verified</mat-icon>
-              <input matInput type="password" formControlName="confirmPassword" placeholder="Confirmez le mot de passe" />
-              @if (hasError('confirmPassword', 'required')) {
-                <mat-error>La confirmation du mot de passe est obligatoire.</mat-error>
-              }
-              @if (form.hasError('passwordMismatch') && isTouched('confirmPassword')) {
-                <mat-error>Les mots de passe ne correspondent pas.</mat-error>
-              }
-            </mat-form-field>
-          </div>
+        <mat-divider></mat-divider>
 
-          <div class="form-actions">
-            <a mat-stroked-button routerLink="/app/users">
-              <mat-icon>arrow_back</mat-icon>
-              Retour a la liste
-            </a>
-
-            <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
-              @if (submitting()) {
-                <mat-spinner diameter="20"></mat-spinner>
-              } @else {
-                <mat-icon>save</mat-icon>
-              }
-              <span>Creer le compte</span>
-            </button>
-          </div>
-        </form>
-      </mat-card>
-    </div>
+        <div class="form-actions">
+          <button mat-stroked-button type="button" routerLink="/app/users">
+            <mat-icon>cancel</mat-icon> Annuler
+          </button>
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+            <mat-icon>save</mat-icon>
+            {{ isEdit ? 'Mettre à jour' : 'Créer l\'utilisateur' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
   `,
-  styles: [
-    `
-      .create-user-grid {
-        display: grid;
-        grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
-        gap: 20px;
-      }
-
-      .info-card,
-      .form-card {
-        border-radius: 20px !important;
-        padding: 24px !important;
-        border: 1px solid rgba(15, 35, 84, 0.08);
-        box-shadow: 0 14px 36px rgba(15, 35, 84, 0.08) !important;
-      }
-
-      .info-card {
-        align-self: start;
-        background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 100%);
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        margin-bottom: 10px;
-        color: #1747a6;
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-
-      .info-card h2,
-      .form-head h2 {
-        margin: 0;
-        color: #13213d;
-        font-size: 1.35rem;
-        font-weight: 800;
-      }
-
-      .info-card p,
-      .form-head p {
-        margin: 10px 0 0;
-        color: #5f6d85;
-        line-height: 1.7;
-      }
-
-      .info-points {
-        display: grid;
-        gap: 12px;
-        margin-top: 22px;
-      }
-
-      .info-point {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        padding: 12px 14px;
-        border-radius: 14px;
-        background: rgba(23, 71, 166, 0.05);
-        color: #13213d;
-        font-weight: 600;
-      }
-
-      .info-point mat-icon {
-        color: #1747a6;
-      }
-
-      .form-head {
-        margin-bottom: 18px;
-      }
-
-      .feedback {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-        padding: 14px 16px;
-        border-radius: 14px;
-        margin-bottom: 18px;
-      }
-
-      .feedback--error {
-        background: #fff3f0;
-        border: 1px solid rgba(198, 40, 40, 0.18);
-        color: #b42318;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-      }
-
-      mat-form-field {
-        width: 100%;
-      }
-
-      .role-hint-card {
-        display: grid;
-        gap: 6px;
-        align-content: start;
-        min-height: 120px;
-        padding: 18px;
-        border-radius: 18px;
-        background: linear-gradient(180deg, #fbfcff 0%, #f4f7ff 100%);
-        border: 1px solid rgba(23, 71, 166, 0.1);
-      }
-
-      .role-hint-card__label {
-        color: #1747a6;
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .role-hint-card strong {
-        color: #13213d;
-        font-size: 1rem;
-      }
-
-      .role-hint-card p {
-        margin: 0;
-        color: #5f6d85;
-        line-height: 1.6;
-      }
-
-      .form-actions {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 24px;
-        padding-top: 22px;
-        border-top: 1px solid rgba(15, 35, 84, 0.08);
-      }
-
-      .form-actions a,
-      .form-actions button {
-        min-height: 46px;
-        border-radius: 12px !important;
-        font-weight: 700 !important;
-      }
-
-      .form-actions button {
-        min-width: 190px;
-      }
-
-      .form-actions button .mdc-button__label {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      @media (max-width: 1024px) {
-        .create-user-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 760px) {
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .form-actions {
-          flex-direction: column-reverse;
-        }
-
-        .form-actions a,
-        .form-actions button {
-          width: 100%;
-        }
-      }
-    `,
-  ],
+  styles: [`
+    .form-card { border-radius: 16px !important; padding: 24px !important; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    mat-form-field { width: 100%; }
+    .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 16px; }
+    .form-actions button { border-radius: 10px !important; height: 44px; min-width: 140px; }
+  `]
 })
-export class UserFormComponent {
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly usersService = inject(UsersService);
+export class UserFormComponent implements OnInit {
+  form: FormGroup;
+  isEdit = false;
+  loading = signal(false);
 
-  readonly submitting = signal(false);
-  readonly submitError = signal('');
+  get pageTitle(): string { return this.isEdit ? "Modifier l'utilisateur" : "Nouvel utilisateur"; }
+  get pageSubtitle(): string { return this.isEdit ? "Mettre à jour les informations" : "Créer un nouveau compte utilisateur"; }
 
-  readonly roleOptions: Array<{ value: AdminCreateUserRequest['role']; label: string }> = [
-    { value: 'PLAYER', label: 'Joueur' },
-    { value: 'CLUB_MANAGER', label: 'Responsable Club' },
-    { value: 'COACH', label: 'Entraineur' },
-    { value: 'REFEREE', label: 'Arbitre' },
-  ];
-
-  readonly roleLabels: Record<AdminCreateUserRequest['role'], string> = {
-    PLAYER: 'Joueur',
-    CLUB_MANAGER: 'Responsable Club',
-    COACH: 'Entraineur',
-    REFEREE: 'Arbitre',
-  };
-
-  readonly form = this.formBuilder.group(
-    {
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private usersService: UsersService
+  ) {
+    this.form = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      role: ['PLAYER' as AdminCreateUserRequest['role'], Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-    },
-    { validators: passwordMatchValidator() }
-  );
-
-  readonly selectedRoleLabel = computed(
-    () => this.roleLabels[this.form.controls.role.value ?? 'PLAYER']
-  );
-
-  hasError(
-    controlName:
-      | 'username'
-      | 'email'
-      | 'firstName'
-      | 'lastName'
-      | 'role'
-      | 'password'
-      | 'confirmPassword',
-    errorCode: string
-  ): boolean {
-    const control = this.form.get(controlName);
-    return !!control && control.hasError(errorCode) && (control.touched || control.dirty);
-  }
-
-  isTouched(controlName: 'confirmPassword' | 'password'): boolean {
-    const control = this.form.get(controlName);
-    return !!control && (control.touched || control.dirty);
-  }
-
-  onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.submitting.set(true);
-    this.submitError.set('');
-
-    const { confirmPassword: _confirmPassword, ...payload } = this.form.getRawValue();
-
-    this.usersService.create(payload as AdminCreateUserRequest).subscribe({
-      next: (user) => {
-        this.submitting.set(false);
-        this.snackBar.open(
-          `Le compte ${user.firstName} ${user.lastName} a ete cree et active avec succes.`,
-          'Fermer',
-          { duration: 4000 }
-        );
-        this.router.navigate(['/app/users']);
-      },
-      error: (error: unknown) => {
-        this.submitting.set(false);
-        this.submitError.set(this.getErrorMessage(error));
-      },
+      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      role: ['PLAYER', Validators.required],
+      status: ['active', Validators.required],
+      password: [''],
     });
   }
 
-  private getErrorMessage(error: unknown): string {
-    if (error instanceof HttpErrorResponse) {
-      const backendMessage =
-        typeof error.error === 'string'
-          ? error.error
-          : error.error?.message || error.error?.error || error.message;
-
-      if (backendMessage) {
-        return backendMessage;
-      }
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id && id !== 'new') {
+      this.isEdit = true;
+      this.usersService.getById(id).subscribe(user => {
+        if (user) this.form.patchValue(user);
+      });
     }
+  }
 
-    return 'Impossible de creer ce compte pour le moment.';
+  onSubmit(): void {
+    if (this.form.invalid) return;
+    this.loading.set(true);
+    const id = this.route.snapshot.paramMap.get('id');
+    const action = this.isEdit && id ? this.usersService.update(id, this.form.value) : this.usersService.create(this.form.value);
+    action.subscribe(() => {
+      this.loading.set(false);
+      this.router.navigate(['/app/users']);
+    });
   }
 }

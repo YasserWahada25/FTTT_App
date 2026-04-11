@@ -1,6 +1,8 @@
 package com.FTTTApp.terrain_service;
 
+import com.FTTTApp.terrain_service.DTO.TerrainEventDTO; // Assure-toi que ce package correspond bien à l'emplacement de ton DTO
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +12,29 @@ import java.util.List;
 public class TerrainService {
 
     private final TerrainRepository terrainRepository;
+
+    // =========================================================================
+    // 🎧 L'Écouteur RabbitMQ (Consommateur)
+    // =========================================================================
+
+    @RabbitListener(queues = "terrain_queue")
+    public void consommerMessageRabbitMQ(TerrainEventDTO event) {
+        System.out.println("========== MESSAGE REÇU DEPUIS RABBITMQ ! ==========");
+        System.out.println("Message : " + event.getMessage());
+        System.out.println("ID du Club concerné : " + event.getClubId());
+        System.out.println("====================================================");
+
+        // Exemple de logique métier que tu peux ajouter ici :
+        // Tu pourrais créer un terrain par défaut automatiquement pour ce nouveau club
+        // Terrain terrainDefaut = new Terrain();
+        // terrainDefaut.setNom("Terrain Principal - Club " + event.getClubId());
+        // terrainDefaut.setDisponible(true);
+        // terrainRepository.save(terrainDefaut);
+    }
+
+    // =========================================================================
+    // 🛠️ Méthodes CRUD Classiques
+    // =========================================================================
 
     // Lister tous les terrains
     public List<Terrain> getAllTerrains() {

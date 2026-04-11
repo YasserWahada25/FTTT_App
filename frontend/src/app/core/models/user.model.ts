@@ -1,20 +1,12 @@
-export type UserRole =
-  | 'ADMIN_FEDERATION'
-  | 'CLUB_MANAGER'
-  | 'COACH'
-  | 'PLAYER'
-  | 'REFEREE'
-  | 'UNKNOWN';
+export type UserRole = 'ADMIN_FEDERATION' | 'CLUB_MANAGER' | 'COACH' | 'PLAYER' | 'REFEREE';
 
 export interface User {
   id: string;
-  username?: string;
   firstName: string;
   lastName: string;
   email: string;
   phone?: string;
   role: UserRole;
-  roles?: UserRole[];
   avatar?: string;
   status: 'active' | 'inactive' | 'suspended';
   clubId?: string;

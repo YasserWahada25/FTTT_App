@@ -1,0 +1,68 @@
+services:
+  # 1. RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-server
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - fttt-network
+
+  # 2. Eureka Server
+  eureka-server:
+    build: ./backend/Eureka-Service  # <-- Le chemin indique d'entrer dans le dossier backend
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - fttt-network
+
+  # 3. Club Service
+  club-service:
+    build: ./backend/club-service    # <-- Ajusté ici aussi
+    container_name: club-service
+    ports:
+      - "9002:9002"
+    depends_on:
+      - rabbitmq
+      - eureka-server
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - fttt-network
+
+  # 4. Terrain Service
+  terrain-service:
+    build: ./backend/terrain-service # <-- Ajusté ici aussi
+    container_name: terrain-service
+    ports:
+      - "9008:9008"
+    depends_on:
+      - rabbitmq
+      - eureka-server
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - fttt-network
+
+  # 5. API Gateway
+  gateway-service:
+    build: ./backend/Gateway-Service # <-- Ajusté ici aussi
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+      - club-service
+      - terrain-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - fttt-network
+
+networks:
+  fttt-network:
+    driver: bridge
