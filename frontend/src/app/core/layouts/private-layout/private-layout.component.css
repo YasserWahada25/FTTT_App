@@ -81,9 +81,73 @@
   flex: 1;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.22);
+  margin: 0 6px 0 4px;
+  flex-shrink: 0;
+}
+
+.topbar-logout {
+  height: 36px !important;
+  min-width: 40px !important;
+  padding: 0 10px !important;
+  border-radius: 10px !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  letter-spacing: 0.02em;
+  line-height: 1 !important;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.topbar-logout mat-icon {
+  margin: 0 !important;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  color: rgba(255, 224, 130, 0.95) !important;
+}
+
+.topbar-logout__label {
+  display: none;
+  margin-left: 8px;
+}
+
+@media (min-width: 900px) {
+  .topbar-logout {
+    padding: 0 14px 0 10px !important;
+  }
+
+  .topbar-logout__label {
+    display: inline;
+  }
+
+  .topbar-logout mat-icon {
+    margin-right: 0 !important;
+  }
+}
+
+.topbar-logout:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
 .action-btn {
   color: rgba(255, 255, 255, 0.9) !important;
-  margin-right: 12px;
   transition: all 0.3s ease;
 }
 
@@ -222,10 +286,6 @@
 .user-email {
   font-size: 0.78rem;
   color: #666;
-}
-
-.logout-btn {
-  color: #f44336 !important;
 }
 
 /* LAYOUT BODY */
