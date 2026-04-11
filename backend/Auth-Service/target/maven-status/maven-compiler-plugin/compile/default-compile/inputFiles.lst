@@ -1,0 +1,17 @@
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\AuthServiceApplication.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\config\SecurityConfig.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\controller\AuthController.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\AdminCreateUserRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\AdminUserResponse.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\ApproveUserRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\CurrentUserResponse.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\PlayerRegisterRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\ProfileSyncRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\StaffRegisterRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\dto\UpdateCurrentUserRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\entity\PendingUserRequest.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\repository\PendingUserRequestRepository.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\service\AuthService.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\service\KeycloakAdminService.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\service\KeycloakTokenService.java
+C:\FTTTApp\backend\Auth-Service\src\main\java\com\FTTTApp\Auth_Service\service\ProfileSyncService.java
