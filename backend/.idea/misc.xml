@@ -6,11 +6,19 @@
       <list>
         <option value="$PROJECT_DIR$/Eureka-Service/pom.xml" />
         <option value="$PROJECT_DIR$/Gateway-Service/pom.xml" />
-        <option value="$PROJECT_DIR$/Licences-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/Sevice-Profile/pom.xml" />
+        <option value="$PROJECT_DIR$/ConfigServer-service/pom.xml" />
+        <option value="$PROJECT_DIR$/User-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/Auth-Service/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/User-Service/pom.xml" />
+      </set>
+    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="23" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="corretto-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

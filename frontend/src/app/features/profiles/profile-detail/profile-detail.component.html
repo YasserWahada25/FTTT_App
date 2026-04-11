@@ -52,10 +52,10 @@
                     <mat-icon>email</mat-icon>
                     <span>{{ user.email }}</span>
                 </div>
-                @if (user.phone) {
+                @if (profile?.phone) {
                 <div class="info-row">
                     <mat-icon>phone</mat-icon>
-                    <span>{{ user.phone }}</span>
+                    <span>{{ profile?.phone }}</span>
                 </div>
                 }
             </div>

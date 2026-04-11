@@ -15,24 +15,37 @@
 
     <span class="spacer"></span>
 
-    <!-- Notifications -->
-    <button mat-icon-button matTooltip="Notifications" class="action-btn">
-      <mat-icon [matBadge]="'3'" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
-    </button>
+    <div class="topbar-actions">
+      <button mat-icon-button matTooltip="Notifications" class="action-btn" type="button">
+        <mat-icon [matBadge]="'3'" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+      </button>
 
-    <!-- User Menu -->
-    <button [matMenuTriggerFor]="userMenu" class="user-profile-trigger">
-      <div class="user-avatar-sm" *ngIf="currentUser">
-        {{ getInitials(currentUser) }}
-      </div>
-      <div class="user-info-sm" *ngIf="currentUser">
-        <span class="user-name">{{ currentUser.firstName }}</span>
-        <span class="user-role-badge" [class]="getRoleColor(currentUser.role)">
-          {{ getRoleLabel(currentUser.role) }}
-        </span>
-      </div>
-      <mat-icon class="dropdown-icon">expand_more</mat-icon>
-    </button>
+      <span class="topbar-divider" aria-hidden="true"></span>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="topbar-logout"
+        (click)="logout()"
+        matTooltip="Fermer la session et revenir a la page de connexion"
+      >
+        <mat-icon>logout</mat-icon>
+        <span class="topbar-logout__label">Se deconnecter</span>
+      </button>
+
+      <button type="button" [matMenuTriggerFor]="userMenu" class="user-profile-trigger" aria-label="Menu du compte">
+        <div class="user-avatar-sm" *ngIf="currentUser">
+          {{ getInitials(currentUser) }}
+        </div>
+        <div class="user-info-sm" *ngIf="currentUser">
+          <span class="user-name">{{ currentUser.firstName }}</span>
+          <span class="user-role-badge" [class]="getRoleColor(currentUser.role)">
+            {{ getRoleLabel(currentUser.role) }}
+          </span>
+        </div>
+        <mat-icon class="dropdown-icon">expand_more</mat-icon>
+      </button>
+    </div>
 
     <mat-menu #userMenu="matMenu" class="user-menu-panel">
       <div class="user-menu-header" *ngIf="currentUser">
@@ -47,14 +60,9 @@
         <mat-icon>account_circle</mat-icon>
         <span>Mon Profil</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item type="button">
         <mat-icon>settings</mat-icon>
         <span>Paramètres</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="logout()" class="logout-btn">
-        <mat-icon>logout</mat-icon>
-        <span>Déconnexion</span>
       </button>
     </mat-menu>
   </mat-toolbar>
