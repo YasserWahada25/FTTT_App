@@ -58,7 +58,7 @@ public class CompetitionController {
      * GET /api/competitions/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CompetitionResponseDTO> getCompetitionById(@PathVariable Long id) {
+    public ResponseEntity<CompetitionResponseDTO> getCompetitionById(@PathVariable("id") Long id) {
         System.out.println("Requête GET reçue pour récupérer la compétition avec l'ID : " + id);
         
         CompetitionResponseDTO response = competitionService.getCompetitionById(id);
@@ -71,7 +71,7 @@ public class CompetitionController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CompetitionResponseDTO> updateCompetition(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody CompetitionRequestDTO requestDTO) {
         
         System.out.println("Requête PUT reçue pour mettre à jour la compétition avec l'ID : " + id);
@@ -85,7 +85,7 @@ public class CompetitionController {
      * DELETE /api/competitions/{id}
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompetition(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCompetition(@PathVariable("id") Long id) {
         System.out.println("Requête DELETE reçue pour supprimer la compétition avec l'ID : " + id);
         
         competitionService.deleteCompetition(id);
@@ -104,11 +104,11 @@ public class CompetitionController {
      */
     @GetMapping("/calendar")
     public ResponseEntity<List<CompetitionCalendarDTO>> getCompetitionCalendar(
-            @RequestParam(required = false) CompetitionCategory category,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) 
+            @RequestParam(name = "category", required = false) CompetitionCategory category,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "startDate", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) 
+            @RequestParam(name = "endDate", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         
         System.out.println("Requête GET reçue pour le calendrier des compétitions");

@@ -5,63 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="773bcf42-2910-46f6-b3bd-1779cdeb643c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/dto/ApproveUserRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/dto/PlayerRegisterRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/dto/StaffRegisterRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/entity/PendingUserRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/repository/PendingUserRequestRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/service/KeycloakAdminService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/service/KeycloakTokenService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/controllers/ProfileController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/dto/ProfileDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/entities/Profile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/repositories/ProfileRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/services/ProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/src/main/java/com/FTTTApp/Gateway_Service/GatewayServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/src/test/java/com/FTTTApp/Gateway_Service/GatewayServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.routes.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.routes.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/guards/auth.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/guards/auth.guard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/guards/role.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/guards/role.guard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/interceptors/jwt.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/interceptors/jwt.interceptor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/layouts/public-layout/public-layout.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/layouts/public-layout/public-layout.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/models/profile.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/models/profile.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/models/user.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/core/services/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/auth/auth.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/auth/auth.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/auth/login/login.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/profiles/my-profile/my-profile.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/profiles/profile-detail/profile-detail.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/profiles/profile-detail/profile-detail.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/profiles/services/profiles.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/profiles/services/profiles.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/services/users.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/services/users.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/user-detail/user-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/user-detail/user-detail.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/user-form/user-form.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/user-form/user-form.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/users-list/users-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/app/features/users/users.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/app/features/users/users.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth-Service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth-Service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Competition_Service/src/main/java/com/FTTT/Competition_Service/controllers/CompetitionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Competition_Service/src/main/java/com/FTTT/Competition_Service/controllers/CompetitionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gateway-Service/src/main/java/com/FTTTApp/Gateway_Service/GatewayServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway-Service/src/main/java/com/FTTTApp/Gateway_Service/GatewayServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/controllers/LicenceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/controllers/LicenceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/dto/LicenceResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/dto/LicenceResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/entities/Licence.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/entities/Licence.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/repositories/LicenceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/repositories/LicenceRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/services/LicenceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/services/LicenceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sevice-Profile/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Sevice-Profile/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/controllers/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/controllers/ProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Client/TerrainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Client/TerrainClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Controllor/ClubController.java" beforeDir="false" afterPath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Controllor/ClubController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/terrain-service/src/main/java/com/FTTTApp/terrain_service/TerrainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/terrain-service/src/main/java/com/FTTTApp/terrain_service/TerrainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,37 +57,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.Auth-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Eureka-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Gateway-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Sevice-Profile [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Sevice-Profile [org.apache.maven.plugins:maven-install-plugin:3.1.4:help].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Sevice-Profile [org.apache.maven.plugins:maven-install-plugin:3.1.4:install].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.AuthServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.EurekaServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.SeviceProfileApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/FTTTApp/backend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.Auth-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor": "Run",
+    "Maven.Eureka-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor": "Run",
+    "Maven.Gateway-Service [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor": "Run",
+    "Maven.Sevice-Profile [org.apache.maven.plugins:maven-clean-plugin:3.5.0:clean].executor": "Run",
+    "Maven.Sevice-Profile [org.apache.maven.plugins:maven-install-plugin:3.1.4:help].executor": "Run",
+    "Maven.Sevice-Profile [org.apache.maven.plugins:maven-install-plugin:3.1.4:install].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.AuthServiceApplication.executor": "Run",
+    "Spring Boot.EurekaServiceApplication.executor": "Run",
+    "Spring Boot.GatewayServiceApplication.executor": "Run",
+    "Spring Boot.LicencesServiceApplication.executor": "Run",
+    "Spring Boot.SeviceProfileApplication.executor": "Run",
+    "Spring Boot.UserServiceApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/FTTApp Vesrion 2/FTTT_App/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -133,7 +99,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.SeviceProfileApplication">
+  <component name="RunManager" selected="Spring Boot.LicencesServiceApplication">
     <configuration name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Auth-Service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.FTTTApp.Auth_Service.AuthServiceApplication" />
@@ -158,6 +124,13 @@
     <configuration name="GatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Gateway-Service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.FTTTApp.Gateway_Service.GatewayServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LicencesServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Licences-Service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.FTTTApp.Licences_Service.LicencesServiceApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -200,6 +173,8 @@
       <workItem from="1775400061845" duration="6706000" />
       <workItem from="1775724190909" duration="6000" />
       <workItem from="1775834550632" duration="382000" />
+      <workItem from="1776071659055" duration="13000" />
+      <workItem from="1776071696742" duration="3479000" />
     </task>
     <servers />
   </component>

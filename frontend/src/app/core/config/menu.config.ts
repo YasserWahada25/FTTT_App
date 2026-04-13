@@ -42,13 +42,13 @@ export const MENU_ITEMS: MenuItem[] = [
         label: 'Licences',
         icon: 'badge',
         route: '/app/licenses',
-        roles: ['ADMIN_FEDERATION'],
+        roles: ['ADMIN_FEDERATION', 'CLUB_MANAGER', 'COACH'],
     },
     {
         label: 'Mes Licences',
         icon: 'badge',
         route: '/app/licenses/my',
-        roles: ['PLAYER', 'CLUB_MANAGER'],
+        roles: ['PLAYER', 'CLUB_MANAGER', 'ADMIN_FEDERATION'],
     },
     {
         label: 'Compétitions',

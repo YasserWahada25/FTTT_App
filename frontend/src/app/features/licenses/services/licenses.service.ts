@@ -1,33 +1,138 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { License } from '../../../core/models/license.model';
-
-const MOCK_LICENSES: License[] = [
-    { id: 'l1', licenseNumber: 'FTTT-2025-00001', playerId: '3', playerName: 'Monica', clubId: 'c1', clubName: 'Stade Tunisien TT', season: '2024-2025', category: 'Senior Dames', status: 'active', requestDate: '2024-09-01', approvalDate: '2024-09-10', expiryDate: '2025-08-31', amount: 150, paymentStatus: 'paid' },
-    { id: 'l2', licenseNumber: 'FTTT-2025-00002', playerId: '6', playerName: 'Bella', clubId: 'c2', clubName: 'CA Sportif TT', season: '2024-2025', category: 'Senior Dames', status: 'pending', requestDate: '2024-10-15', expiryDate: '2025-08-31', amount: 150, paymentStatus: 'pending' },
-    { id: 'l3', licenseNumber: 'FTTT-2025-00003', playerId: '4', playerName: 'Patrice', clubId: 'c1', clubName: 'Stade Tunisien TT', season: '2024-2025', category: 'Senior Hommes', status: 'active', requestDate: '2024-09-05', approvalDate: '2024-09-12', expiryDate: '2025-08-31', amount: 150, paymentStatus: 'paid' },
-    { id: 'l4', licenseNumber: 'FTTT-2024-00010', playerId: '3', playerName: 'Sofia', clubId: 'c1', clubName: 'Stade Tunisien TT', season: '2023-2024', category: 'Senior Dames', status: 'expired', requestDate: '2023-10-01', approvalDate: '2023-10-08', expiryDate: '2024-08-31', amount: 120, paymentStatus: 'paid' },
-    { id: 'l5', licenseNumber: 'FTTT-2025-00004', playerId: '8', playerName: 'Karim', clubId: 'c3', clubName: 'Club Sfax TT', season: '2024-2025', category: 'Senior Hommes', status: 'rejected', requestDate: '2024-11-01', expiryDate: '2025-08-31', amount: 150, paymentStatus: 'pending', notes: 'Documents incomplets' },
-];
+import { Observable, catchError, map, of } from 'rxjs';
+import {
+    License,
+    LicenseApiResponse,
+    LicenseCreateRequest,
+    LicenseValidityApiResponse,
+} from '../../../core/models/license.model';
 
 @Injectable({ providedIn: 'root' })
 export class LicensesService {
-    getAll(): Observable<License[]> { return of(MOCK_LICENSES).pipe(delay(300)); }
-    getMyLicenses(playerId: string): Observable<License[]> { return of(MOCK_LICENSES.filter(l => l.playerId === playerId)).pipe(delay(300)); }
-    getById(id: string): Observable<License | undefined> { return of(MOCK_LICENSES.find(l => l.id === id)).pipe(delay(200)); }
-    create(data: Partial<License>): Observable<License> {
-        const l = { ...data as License, id: Date.now().toString(), requestDate: new Date().toISOString() };
-        MOCK_LICENSES.push(l); return of(l).pipe(delay(400));
+    private readonly base = '/api/licenses';
+
+    constructor(private readonly http: HttpClient) {}
+
+    getAll(status?: string, clubId?: string): Observable<License[]> {
+        let params = new HttpParams();
+        if (status) {
+            params = params.set('status', status);
+        }
+        if (clubId) {
+            params = params.set('clubId', clubId);
+        }
+        return this.http
+            .get<LicenseApiResponse[]>(this.base, { params })
+            .pipe(map((rows) => rows.map((r) => this.mapLicense(r))));
     }
+
+    getMyLicenses(): Observable<License[]> {
+        return this.http
+            .get<LicenseApiResponse[]>(`${this.base}/me`)
+            .pipe(map((rows) => rows.map((r) => this.mapLicense(r))));
+    }
+
+    getByPlayerId(playerId: string): Observable<License[]> {
+        return this.http
+            .get<LicenseApiResponse[]>(`${this.base}/player/${encodeURIComponent(playerId)}`)
+            .pipe(map((rows) => rows.map((r) => this.mapLicense(r))));
+    }
+
+    getById(id: string): Observable<License | undefined> {
+        return this.http.get<LicenseApiResponse>(`${this.base}/${id}`).pipe(
+            map((r) => this.mapLicense(r)),
+            catchError(() => of(undefined))
+        );
+    }
+
+    verify(licenseNumber: string): Observable<LicenseValidityApiResponse> {
+        const params = new HttpParams().set('number', licenseNumber);
+        return this.http.get<LicenseValidityApiResponse>(`${this.base}/verify`, { params });
+    }
+
+    create(data: LicenseCreateRequest): Observable<License> {
+        return this.http
+            .post<LicenseApiResponse>(this.base, data)
+            .pipe(map((r) => this.mapLicense(r)));
+    }
+
+    renew(
+        id: string,
+        body?: { season?: string; expiryDate?: string; amount?: number; category?: string; notes?: string }
+    ): Observable<License> {
+        return this.http
+            .post<LicenseApiResponse>(`${this.base}/${id}/renew`, body ?? {})
+            .pipe(map((r) => this.mapLicense(r)));
+    }
+
     approve(id: string): Observable<License> {
-        const idx = MOCK_LICENSES.findIndex(l => l.id === id);
-        if (idx >= 0) MOCK_LICENSES[idx] = { ...MOCK_LICENSES[idx], status: 'approved', approvalDate: new Date().toISOString() };
-        return of(MOCK_LICENSES[idx]).pipe(delay(300));
+        return this.http
+            .put<LicenseApiResponse>(`${this.base}/${id}/approve`, {})
+            .pipe(map((r) => this.mapLicense(r)));
     }
+
     reject(id: string, notes: string): Observable<License> {
-        const idx = MOCK_LICENSES.findIndex(l => l.id === id);
-        if (idx >= 0) MOCK_LICENSES[idx] = { ...MOCK_LICENSES[idx], status: 'rejected', notes };
-        return of(MOCK_LICENSES[idx]).pipe(delay(300));
+        return this.http
+            .put<LicenseApiResponse>(`${this.base}/${id}/reject`, { notes })
+            .pipe(map((r) => this.mapLicense(r)));
+    }
+
+    private mapLicense(r: LicenseApiResponse): License {
+        const payment = this.mapPayment(r.paymentStatus);
+        const status = this.mapCombinedStatus(r);
+        return {
+            id: String(r.id),
+            licenseNumber: r.licenseNumber,
+            playerId: r.playerId,
+            playerName: r.playerName,
+            clubId: r.clubId,
+            clubName: r.clubName,
+            season: r.season,
+            category: r.category,
+            status,
+            requestDate: r.requestDate,
+            approvalDate: r.approvalDate,
+            expiryDate: r.expiryDate,
+            amount: Number(r.amount),
+            paymentStatus: payment,
+            notes: r.notes,
+            renewedFromLicenceId:
+                r.renewedFromLicenceId !== undefined && r.renewedFromLicenceId !== null
+                    ? String(r.renewedFromLicenceId)
+                    : undefined,
+            validNow: r.validNow,
+            expiredByDate: r.expiredByDate,
+        };
+    }
+
+    private mapPayment(s: LicenseApiResponse['paymentStatus']): License['paymentStatus'] {
+        switch (s) {
+            case 'PAID':
+                return 'paid';
+            case 'CANCELLED':
+                return 'cancelled';
+            default:
+                return 'pending';
+        }
+    }
+
+    private mapCombinedStatus(r: LicenseApiResponse): License['status'] {
+        if (r.status === 'PENDING') {
+            return 'pending';
+        }
+        if (r.status === 'REJECTED') {
+            return 'rejected';
+        }
+        if (r.status === 'APPROVED') {
+            if (r.expiredByDate) {
+                return 'expired';
+            }
+            if (r.validNow) {
+                return 'active';
+            }
+            return 'approved';
+        }
+        return 'pending';
     }
 }

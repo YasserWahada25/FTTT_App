@@ -1,6 +1,6 @@
 <app-page-header title="Gestion des Licences" subtitle="Gérer et valider les demandes de licences" icon="badge"
     [breadcrumbs]="[{label:'Dashboard', route:'/app/dashboard'},{label:'Licences'}]"
-    [actions]="[{label:'Exporter', icon:'download', variant:'stroked', action:emptyAction}, {label:'Nouvelle Demande', icon:'add', action:goToNewLicense.bind(this)}]"></app-page-header>
+    [actions]="headerActions()"></app-page-header>
 
 <!-- Stats -->
 <div class="license-stats-bar">
@@ -78,7 +78,7 @@
                     <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                     <mat-menu #menu="matMenu">
                         <a mat-menu-item [routerLink]="['/app/licenses', l.id]"><mat-icon>visibility</mat-icon> Voir</a>
-                        @if (l.status === 'pending') {
+                        @if (l.status === 'pending' && canApprove) {
                         <button mat-menu-item class="approve-btn"
                             (click)="approve(l.id)"><mat-icon>check_circle</mat-icon> Approuver</button>
                         <button mat-menu-item class="reject-btn" (click)="reject(l.id)"><mat-icon>cancel</mat-icon>

@@ -25,10 +25,16 @@ public class LicenceResponse {
     private BigDecimal amount;
     private PaymentStatus paymentStatus;
     private String notes;
+    private Long renewedFromLicenceId;
+    /** True si statut APPROVED et date d'expiration non dépassée (aujourdhui). */
+    private boolean validNow;
+    /** True si statut APPROVED et expirée par la date. */
+    private boolean expiredByDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public static LicenceResponse fromEntity(Licence licence) {
+        LocalDate today = LocalDate.now();
         LicenceResponse dto = new LicenceResponse();
         dto.id = licence.getId();
         dto.licenseNumber = licence.getLicenseNumber();
@@ -45,6 +51,11 @@ public class LicenceResponse {
         dto.amount = licence.getAmount();
         dto.paymentStatus = licence.getPaymentStatus();
         dto.notes = licence.getNotes();
+        dto.renewedFromLicenceId = licence.getRenewedFromLicenceId();
+        dto.validNow = licence.getStatus() == LicenceStatus.APPROVED
+                && !today.isAfter(licence.getExpiryDate());
+        dto.expiredByDate = licence.getStatus() == LicenceStatus.APPROVED
+                && today.isAfter(licence.getExpiryDate());
         dto.createdAt = licence.getCreatedAt();
         dto.updatedAt = licence.getUpdatedAt();
         return dto;
@@ -108,6 +119,18 @@ public class LicenceResponse {
 
     public String getNotes() {
         return notes;
+    }
+
+    public Long getRenewedFromLicenceId() {
+        return renewedFromLicenceId;
+    }
+
+    public boolean isValidNow() {
+        return validNow;
+    }
+
+    public boolean isExpiredByDate() {
+        return expiredByDate;
     }
 
     public LocalDateTime getCreatedAt() {

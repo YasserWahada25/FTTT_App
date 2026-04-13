@@ -20,7 +20,7 @@ public class TerrainController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Terrain> getTerrainById(@PathVariable Long id) {
+    public ResponseEntity<Terrain> getTerrainById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(terrainService.getTerrainById(id));
     }
 
@@ -36,13 +36,13 @@ public class TerrainController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Terrain> updateTerrain(@PathVariable Long id,
+    public ResponseEntity<Terrain> updateTerrain(@PathVariable("id") Long id,
                                                  @RequestBody Terrain terrain) {
         return ResponseEntity.ok(terrainService.updateTerrain(id, terrain));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTerrain(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTerrain(@PathVariable("id") Long id) {
         terrainService.deleteTerrain(id);
         return ResponseEntity.noContent().build();
     }

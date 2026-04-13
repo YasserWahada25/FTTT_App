@@ -18,7 +18,9 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { LicensesService } from '../services/licenses.service';
 import { UsersService } from '../../users/services/users.service';
 import { ClubsService } from '../../clubs/services/clubs.service';
+import { ProfilesService } from '../../profiles/services/profiles.service';
 import { User } from '../../../core/models/user.model';
+import { Profile } from '../../../core/models/profile.model';
 import { Club } from '../../../core/models/club.model';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -48,6 +50,7 @@ export class LicenseFormComponent implements OnInit {
         private licensesService: LicensesService,
         private usersService: UsersService,
         private clubsService: ClubsService,
+        private profilesService: ProfilesService,
         private snackBar: MatSnackBar,
         public authService: AuthService
     ) {
@@ -55,26 +58,49 @@ export class LicenseFormComponent implements OnInit {
             playerId: ['', Validators.required],
             clubId: ['', Validators.required],
             category: ['', Validators.required],
-            actionType: ['new', Validators.required], // 'new' or 'renewal'
+            actionType: ['new', Validators.required],
             medicalCertificate: [null],
             photo: [null],
             notes: ['']
         });
     }
 
-    ngOnInit(): void {
-        // Load lists for dropdowns
-        this.usersService.getAll().subscribe(users => {
-            this.players = users.filter(u => u.role === 'PLAYER');
-        });
+    get isPlayerSelfService(): boolean {
+        return this.authService.hasRole('PLAYER')
+            && !this.authService.hasRole('ADMIN_FEDERATION')
+            && !this.authService.hasRole('CLUB_MANAGER');
+    }
 
-        this.clubsService.getAll().subscribe(clubs => {
+    ngOnInit(): void {
+        const u = this.authService.currentUser;
+
+        if (this.isPlayerSelfService && u) {
+            this.licenseForm.patchValue({ playerId: u.id });
+            this.licenseForm.get('playerId')?.disable();
+        } else if (this.authService.hasRole('ADMIN_FEDERATION')) {
+            this.usersService.getAll().subscribe({
+                next: (users) => {
+                    this.players = users.filter((x) => x.role === 'PLAYER');
+                },
+                error: () => {
+                    this.snackBar.open('Impossible de charger les utilisateurs.', 'Fermer', { duration: 4000 });
+                },
+            });
+        } else if (this.authService.hasRole('CLUB_MANAGER')) {
+            this.profilesService.getAll().subscribe((profiles) => {
+                const cid = u?.clubId;
+                this.players = profiles
+                    .filter((p) => cid && String(p.clubId ?? '') === String(cid))
+                    .map((p) => this.profileToUser(p));
+            });
+        }
+
+        this.clubsService.getAll().subscribe((clubs) => {
             this.clubs = clubs;
         });
 
-        // If club manager, auto-select club
-        if (this.authService.hasRole(['CLUB_MANAGER']) && this.authService.currentUser?.clubId) {
-            this.licenseForm.patchValue({ clubId: this.authService.currentUser.clubId });
+        if (this.authService.hasRole('CLUB_MANAGER') && u?.clubId) {
+            this.licenseForm.patchValue({ clubId: u.clubId });
             this.licenseForm.get('clubId')?.disable();
         }
     }
@@ -84,7 +110,7 @@ export class LicenseFormComponent implements OnInit {
     }
 
     get pageSubtitle(): string {
-        return 'Soumettre une demande d\'affiliation ou de renouvellement';
+        return 'Soumettre une demande d\'affiliation (validation fédérale requise)';
     }
 
     onSubmit(): void {
@@ -96,39 +122,66 @@ export class LicenseFormComponent implements OnInit {
         this.loading.set(true);
         const formValue = this.licenseForm.getRawValue();
 
-        const selectedPlayer = this.players.find(p => p.id === formValue.playerId);
-        const selectedClub = this.clubs.find(c => c.id === formValue.clubId);
+        const selectedPlayer = this.players.find((p) => p.id === formValue.playerId)
+            ?? this.authService.currentUser;
+        const selectedClub = this.clubs.find((c) => c.id === formValue.clubId);
 
-        const newLicense = {
-            licenseNumber: `PENDING-${Math.floor(Math.random() * 10000)}`,
-            playerId: formValue.playerId,
-            playerName: selectedPlayer ? `${selectedPlayer.firstName} ${selectedPlayer.lastName}` : '',
-            clubId: formValue.clubId,
-            clubName: selectedClub?.name || '',
-            category: formValue.category,
-            season: '2024-2025',
-            status: 'pending' as const,
-            paymentStatus: 'pending' as const,
-            amount: formValue.category === 'Senior' ? 50 : 30, // Mock amount Logic
-            expiryDate: '2025-08-31',
-            requestDate: new Date().toISOString().split('T')[0],
-            notes: formValue.notes
-        };
+        if (!selectedPlayer || !formValue.clubId || !selectedClub) {
+            this.snackBar.open('Joueur ou club invalide.', 'Fermer', { duration: 3000 });
+            this.loading.set(false);
+            return;
+        }
 
-        this.licensesService.create(newLicense).subscribe({
-            next: () => {
-                this.snackBar.open('Demande de licence soumise avec succès.', 'Fermer', { duration: 3000, panelClass: ['success-snackbar'] });
-                this.loading.set(false);
-                this.router.navigate(['/app/licenses']);
-            },
-            error: () => {
-                this.snackBar.open('Erreur lors de la soumission.', 'Fermer', { duration: 3000, panelClass: ['error-snackbar'] });
-                this.loading.set(false);
-            }
-        });
+        const y = new Date().getFullYear();
+        const season = `${y}-${y + 1}`;
+
+        this.licensesService
+            .create({
+                playerId: formValue.playerId,
+                playerName: `${selectedPlayer.firstName} ${selectedPlayer.lastName}`.trim(),
+                clubId: formValue.clubId,
+                clubName: selectedClub.name,
+                category: formValue.category,
+                season,
+                notes: formValue.notes || undefined,
+            })
+            .subscribe({
+                next: () => {
+                    this.snackBar.open('Demande de licence soumise avec succès.', 'Fermer', {
+                        duration: 3000,
+                        panelClass: ['success-snackbar'],
+                    });
+                    this.loading.set(false);
+                    this.router.navigate(['/app/licenses/my']);
+                },
+                error: (err) => {
+                    const msg =
+                        typeof err.error === 'string'
+                            ? err.error
+                            : err.error?.message ?? 'Erreur lors de la soumission.';
+                    this.snackBar.open(msg, 'Fermer', { duration: 5000, panelClass: ['error-snackbar'] });
+                    this.loading.set(false);
+                },
+            });
     }
 
     goBack(): void {
-        this.router.navigate(['/app/licenses']);
+        const path = this.isPlayerSelfService ? '/app/licenses/my' : '/app/licenses';
+        void this.router.navigate([path]);
+    }
+
+    private profileToUser(p: Profile): User {
+        const name = p.name?.trim() || '';
+        const parts = name.split(/\s+/).filter(Boolean);
+        return {
+            id: p.userId,
+            firstName: parts[0] ?? '—',
+            lastName: parts.slice(1).join(' ') ?? '',
+            email: p.email ?? '',
+            role: 'PLAYER',
+            status: 'active',
+            createdAt: '',
+            updatedAt: '',
+        };
     }
 }

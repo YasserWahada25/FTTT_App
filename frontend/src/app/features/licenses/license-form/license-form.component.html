@@ -13,23 +13,31 @@
             <form [formGroup]="licenseForm" (ngSubmit)="onSubmit()">
                 <mat-card-content class="pt-24">
                     <div class="form-row">
-                        <mat-form-field appearance="outline" class="flex-field">
+                        @if (isPlayerSelfService) {
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
+                            <mat-label>Joueur</mat-label>
+                            <input matInput [value]="(authService.currentUser?.firstName || '') + ' ' + (authService.currentUser?.lastName || '')" disabled />
+                            <mat-hint>Demande pour votre compte joueur</mat-hint>
+                        </mat-form-field>
+                        } @else {
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
                             <mat-label>Joueur concerné</mat-label>
-                            <mat-select formControlName="playerId" required>
+                            <mat-select formControlName="playerId" required panelClass="license-form-select-panel">
                                 @for (player of players; track player.id) {
                                 <mat-option [value]="player.id">{{ player.firstName }} {{ player.lastName }} ({{
                                     player.email }})</mat-option>
                                 }
                             </mat-select>
                             <mat-error>Le joueur est requis</mat-error>
-                            <mat-hint>Sélectionner un joueur sans licence active</mat-hint>
+                            <mat-hint>Sélectionner un joueur du club (responsable) ou tout joueur (admin)</mat-hint>
                         </mat-form-field>
+                        }
                     </div>
 
                     <div class="form-row mt-16">
-                        <mat-form-field appearance="outline" class="flex-field">
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
                             <mat-label>Club d'affiliation</mat-label>
-                            <mat-select formControlName="clubId" required>
+                            <mat-select formControlName="clubId" required panelClass="license-form-select-panel">
                                 @for (club of clubs; track club.id) {
                                 <mat-option [value]="club.id">{{ club.name }}</mat-option>
                                 }
@@ -37,9 +45,9 @@
                             <mat-error>Le club est requis</mat-error>
                         </mat-form-field>
 
-                        <mat-form-field appearance="outline" class="flex-field">
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
                             <mat-label>Catégorie Sportive</mat-label>
-                            <mat-select formControlName="category" required>
+                            <mat-select formControlName="category" required panelClass="license-form-select-panel">
                                 @for (cat of categories; track cat) {
                                 <mat-option [value]="cat">{{ cat }}</mat-option>
                                 }

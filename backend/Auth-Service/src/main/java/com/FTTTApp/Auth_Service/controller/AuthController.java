@@ -57,14 +57,14 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN_FEDERATION')")
     @PutMapping("/requests/{id}/approve")
-    public ResponseEntity<String> approve(@PathVariable Long id) {
+    public ResponseEntity<String> approve(@PathVariable("id") Long id) {
         authService.approveRequest(id);
         return ResponseEntity.ok("Request approved");
     }
 
     @PreAuthorize("hasRole('ADMIN_FEDERATION')")
     @PutMapping("/requests/{id}/reject")
-    public ResponseEntity<String> reject(@PathVariable Long id) {
+    public ResponseEntity<String> reject(@PathVariable("id") Long id) {
         authService.rejectRequest(id);
         return ResponseEntity.ok("Request rejected");
     }
@@ -72,7 +72,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN_FEDERATION')")
     @GetMapping("/users")
     public ResponseEntity<List<AdminUserResponse>> getUsers(
-            @RequestParam(defaultValue = "all") String status
+            @RequestParam(name = "status", defaultValue = "all") String status
     ) {
         return ResponseEntity.ok(authService.getUsers(status));
     }

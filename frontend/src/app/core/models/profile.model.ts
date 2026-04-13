@@ -3,6 +3,8 @@ export interface Profile {
     userId: string;
     name?: string;
     email?: string;
+    /** Identifiant club (profil joueur), si présent côté API */
+    clubId?: string | number;
     phone?: string;
     category?: string;
     bio?: string;

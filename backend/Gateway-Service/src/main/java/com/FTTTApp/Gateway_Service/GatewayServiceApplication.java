@@ -34,6 +34,10 @@ public class GatewayServiceApplication {
                 .route("AUTH-SERVICE-route", r -> r.path("/api/auth/**")
                         .uri("lb://AUTH-SERVICE"))
 
+                // Licences sportives
+                .route("Licences-Service-route", r -> r.path("/api/licenses/**")
+                        .uri("lb://Licences-Service"))
+
                 .build();
     }
 }

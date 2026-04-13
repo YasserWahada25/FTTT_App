@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 export type BadgeStatus =
     | 'active' | 'inactive' | 'suspended'
     | 'pending' | 'approved' | 'rejected' | 'expired'
-    | 'paid' | 'overdue'
-    | 'open' | 'ongoing' | 'finished' | 'cancelled' | 'draft'
+    | 'paid' | 'overdue' | 'cancelled'
+    | 'open' | 'ongoing' | 'finished' | 'draft'
     | 'scheduled' | 'in_progress' | 'postponed'
     | 'available' | 'maintenance' | 'closed'
     | 'accepted' | 'male' | 'female';
@@ -82,10 +82,10 @@ export class StatusBadgeComponent {
         expired: { label: 'Expiré', icon: 'schedule' },
         paid: { label: 'Payé', icon: 'payments' },
         overdue: { label: 'En retard', icon: 'warning' },
+        cancelled: { label: 'Annulé', icon: 'block' },
         open: { label: 'Ouvert', icon: 'open_in_new' },
         ongoing: { label: 'En cours', icon: 'play_circle' },
         finished: { label: 'Terminé', icon: 'flag' },
-        cancelled: { label: 'Annulé', icon: 'cancel' },
         draft: { label: 'Brouillon', icon: 'edit_note' },
         scheduled: { label: 'Planifié', icon: 'event' },
         in_progress: { label: 'En cours', icon: 'play_circle' },

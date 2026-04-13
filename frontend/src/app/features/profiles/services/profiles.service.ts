@@ -10,6 +10,7 @@ interface ProfileApiResponse {
   userId: string;
   name?: string;
   email?: string;
+  clubId?: number;
   phone?: string;
   category?: string;
   bio?: string;
@@ -33,6 +34,14 @@ export class ProfilesService {
     private readonly http: HttpClient,
     private readonly authService: AuthService
   ) {}
+
+  /** Liste des profils (annuaire) — utilisé notamment pour lier joueurs et clubs aux licences. */
+  getAll(): Observable<Profile[]> {
+    return this.http.get<ProfileApiResponse[]>(`/api/profiles`).pipe(
+      map((rows) => rows.map((p) => this.mapProfile(p))),
+      catchError(() => of([]))
+    );
+  }
 
   getById(id: string): Observable<Profile | undefined> {
     return this.http
@@ -75,6 +84,7 @@ export class ProfilesService {
       userId: profile.userId,
       name: profile.name,
       email: profile.email,
+      clubId: profile.clubId,
       phone: profile.phone,
       category: profile.category,
       bio: profile.bio,

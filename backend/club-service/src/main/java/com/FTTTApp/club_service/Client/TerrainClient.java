@@ -12,14 +12,14 @@ public interface TerrainClient {
     List<TerrainDTO> getAllTerrains();
 
     @GetMapping("/terrains/{id}")
-    TerrainDTO getTerrainById(@PathVariable Long id);
+    TerrainDTO getTerrainById(@PathVariable("id") Long id);
 
     @GetMapping("/terrains/disponibles")
     List<TerrainDTO> getTerrainsDisponibles();
 
     @PatchMapping("/terrains/{id}/disponibilite")
     TerrainDTO changerDisponibilite(
-            @PathVariable Long id,
-            @RequestParam boolean disponible
+            @PathVariable("id") Long id,
+            @RequestParam("disponible") boolean disponible
     );
 }

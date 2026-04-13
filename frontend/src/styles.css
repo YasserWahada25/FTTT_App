@@ -305,6 +305,21 @@ a {
   text-decoration: underline;
 }
 
+/* CDK overlays (mat-select, menus, dialogs) au-dessus du layout privé (topbar z-index 1000) */
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper {
+  z-index: 1200 !important;
+}
+
+/* Panneau mat-select : fond opaque et ombre pour éviter la transparence / chevauchement visuel */
+.license-form-select-panel.mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.12) !important;
+  max-height: 320px !important;
+}
+
 @media (max-width: 720px) {
   .auth-link-grid {
     grid-template-columns: 1fr;

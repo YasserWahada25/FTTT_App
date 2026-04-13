@@ -28,23 +28,23 @@ public class ClubController {
     }
 
     @GetMapping("/{id}")
-    public Club getClubById(@PathVariable Long id) {
+    public Club getClubById(@PathVariable("id") Long id) {
         return clubService.getClubById(id);
     }
 
     @PutMapping("/{id}")
-    public Club updateClub(@PathVariable Long id, @RequestBody Club club) {
+    public Club updateClub(@PathVariable("id") Long id, @RequestBody Club club) {
         return clubService.updateClub(id, club);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteClub(@PathVariable Long id) {
+    public void deleteClub(@PathVariable("id") Long id) {
         clubService.deleteClub(id);
     }
 
     @GetMapping("/{id}/terrains-disponibles")
-    public List<TerrainDTO> getTerrainsForClub(@PathVariable Long id) {
+    public List<TerrainDTO> getTerrainsForClub(@PathVariable("id") Long id) {
         return clubService.getTerrainsDisponiblesForClub(id);
     }
 }

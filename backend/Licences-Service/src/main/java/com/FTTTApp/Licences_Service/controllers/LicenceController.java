@@ -1,19 +1,23 @@
 package com.FTTTApp.Licences_Service.controllers;
 
+import com.FTTTApp.Licences_Service.dto.LicenceRenewalRequest;
 import com.FTTTApp.Licences_Service.dto.LicenceRequest;
 import com.FTTTApp.Licences_Service.dto.LicenceResponse;
+import com.FTTTApp.Licences_Service.dto.LicenceValidityResponse;
 import com.FTTTApp.Licences_Service.dto.RejectRequest;
 import com.FTTTApp.Licences_Service.services.LicenceService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/licenses", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/licenses", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LicenceController {
 
     private final LicenceService licenceService;
@@ -22,45 +26,92 @@ public class LicenceController {
         this.licenceService = licenceService;
     }
 
+    /**
+     * Liste filtrée selon le rôle (fédération : tout ou club optionnel ; club / coach : leur club).
+     */
     @GetMapping
-    public ResponseEntity<List<LicenceResponse>> getAll() {
-        return ResponseEntity.ok(licenceService.findAll());
+    public ResponseEntity<List<LicenceResponse>> list(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "clubId", required = false) String clubId
+    ) {
+        return ResponseEntity.ok(licenceService.listForPrincipal(jwt, status, clubId));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<LicenceResponse>> myLicenses(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(licenceService.findMine(jwt));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<LicenceValidityResponse> verify(
+            @RequestParam(name = "number") String licenseNumber
+    ) {
+        return ResponseEntity.ok(licenceService.verifyByNumber(licenseNumber));
+    }
+
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<LicenceResponse>> byPlayer(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("playerId") String playerId
+    ) {
+        return ResponseEntity.ok(licenceService.findByPlayerIdForPrincipal(jwt, playerId));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<LicenceResponse>> byStatusPath(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("status") String status
+    ) {
+        return ResponseEntity.ok(licenceService.listForPrincipal(jwt, status, null));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LicenceResponse> getById(@PathVariable Long id) {
-        return licenceService.findById(id)
+    public ResponseEntity<LicenceResponse> getById(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("id") Long id
+    ) {
+        return licenceService.findByIdForPrincipal(jwt, id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<LicenceResponse>> getByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(licenceService.findByStatus(status));
-    }
-
-    @GetMapping("/player/{playerId}")
-    public ResponseEntity<List<LicenceResponse>> getByPlayerId(@PathVariable String playerId) {
-        return ResponseEntity.ok(licenceService.findByPlayerId(playerId));
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LicenceResponse> create(@Valid @RequestBody LicenceRequest request) {
-        LicenceResponse created = licenceService.create(request);
+    public ResponseEntity<LicenceResponse> create(
+            @AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody LicenceRequest request
+    ) {
+        LicenceResponse created = licenceService.createForPrincipal(jwt, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PostMapping(path = "/{id}/renew", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LicenceResponse> renew(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("id") Long id,
+            @RequestBody(required = false) LicenceRenewalRequest body
+    ) {
+        LicenceRenewalRequest payload = body != null ? body : new LicenceRenewalRequest();
+        return ResponseEntity.ok(licenceService.renewForPrincipal(jwt, id, payload));
+    }
+
     @PutMapping("/{id}/approve")
-    public ResponseEntity<LicenceResponse> approve(@PathVariable Long id) {
-        return licenceService.approve(id)
+    public ResponseEntity<LicenceResponse> approve(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("id") Long id
+    ) {
+        return licenceService.approve(id, jwt)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/reject")
-    public ResponseEntity<LicenceResponse> reject(@PathVariable Long id,
-                                                  @RequestBody(required = false) RejectRequest body) {
-        return licenceService.reject(id, body != null ? body : new RejectRequest())
+    public ResponseEntity<LicenceResponse> reject(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("id") Long id,
+            @RequestBody(required = false) RejectRequest body
+    ) {
+        return licenceService.reject(id, jwt, body != null ? body : new RejectRequest())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

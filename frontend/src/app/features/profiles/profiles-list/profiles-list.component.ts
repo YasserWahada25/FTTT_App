@@ -84,10 +84,13 @@ export class ProfilesListComponent implements OnInit {
     constructor(private usersService: UsersService) { }
 
     ngOnInit(): void {
-        this.usersService.getAll().subscribe(data => {
-            this.users = data;
-            this.filteredUsers = data;
-            this.loading.set(false);
+        this.usersService.getAll().subscribe({
+            next: (data) => {
+                this.users = data;
+                this.filteredUsers = data;
+                this.loading.set(false);
+            },
+            error: () => this.loading.set(false),
         });
     }
 

@@ -1,0 +1,80 @@
+<app-page-header
+    title="Détail licence"
+    subtitle="Consultation, vérification et renouvellement"
+    icon="badge"
+    [breadcrumbs]="[
+        { label: 'Tableau de bord', route: '/app/dashboard' },
+        { label: 'Licences', route: '/app/licenses' },
+        { label: 'Fiche' }
+    ]"
+    [actions]="[{ label: 'Retour', icon: 'arrow_back', variant: 'stroked', action: goBack.bind(this) }]"
+></app-page-header>
+
+@if (loading()) {
+<div class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+</div>
+} @else if (!license) {
+<mat-card class="mt-24">
+    <mat-card-content>Licence introuvable.</mat-card-content>
+</mat-card>
+} @else {
+<mat-card class="mt-16">
+    <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">assignment_ind</mat-icon>
+        <mat-card-title>{{ license.licenseNumber }}</mat-card-title>
+        <mat-card-subtitle>{{ license.playerName }} — {{ license.clubName }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="detail-grid">
+        <div><span class="label">Statut</span><app-status-badge [status]="license.status"></app-status-badge></div>
+        <div><span class="label">Paiement</span><app-status-badge [status]="license.paymentStatus"></app-status-badge></div>
+        <div><span class="label">Saison</span>{{ license.season }}</div>
+        <div><span class="label">Catégorie</span>{{ license.category }}</div>
+        <div><span class="label">Demande</span>{{ license.requestDate | date: 'dd/MM/yyyy' }}</div>
+        @if (license.approvalDate) {
+        <div><span class="label">Approbation</span>{{ license.approvalDate | date: 'dd/MM/yyyy' }}</div>
+        }
+        <div><span class="label">Expiration</span>{{ license.expiryDate | date: 'dd/MM/yyyy' }}</div>
+        <div><span class="label">Montant</span>{{ license.amount | number: '1.0-2' }} TND</div>
+        @if (license.renewedFromLicenceId) {
+        <div><span class="label">Renouvellement de</span>#{{ license.renewedFromLicenceId }}</div>
+        }
+        @if (license.notes) {
+        <div class="full"><span class="label">Notes</span>{{ license.notes }}</div>
+        }
+    </mat-card-content>
+    <mat-card-actions align="end">
+        @if (canRenew) {
+        <button mat-flat-button color="primary" (click)="renew()"><mat-icon>autorenew</mat-icon> Demander un renouvellement</button>
+        }
+    </mat-card-actions>
+</mat-card>
+
+<mat-card class="mt-16">
+    <mat-card-header>
+        <mat-icon mat-card-avatar color="accent">fact_check</mat-icon>
+        <mat-card-title>Vérifier une licence (numéro)</mat-card-title>
+        <mat-card-subtitle>Contrôle de validité pour compétitions et contrôles</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        @if (canVerifyByNumber) {
+        <div class="verify-row">
+            <mat-form-field appearance="outline" class="verify-field">
+                <mat-label>Numéro de licence</mat-label>
+                <input matInput [(ngModel)]="verifyInput" name="verifyNumber" />
+            </mat-form-field>
+            <button mat-stroked-button color="primary" type="button" (click)="runVerify()">Vérifier</button>
+        </div>
+        } @else {
+        <p>Connectez-vous pour utiliser la vérification.</p>
+        }
+        @if (verifyResult) {
+        <div class="verify-result" [class.valid]="verifyResult.valid" [class.invalid]="verifyResult.found && !verifyResult.valid">
+            <p><strong>{{ verifyResult.message }}</strong></p>
+            <p class="muted">Code : {{ verifyResult.reasonCode }} — {{ verifyResult.checkedAt | date: 'dd/MM/yyyy' }}</p>
+        </div>
+        }
+    </mat-card-content>
+</mat-card>
+}

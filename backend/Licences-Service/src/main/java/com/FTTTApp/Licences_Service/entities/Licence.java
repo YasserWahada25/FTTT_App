@@ -57,6 +57,10 @@ public class Licence {
     @Column(name = "notes", length = 1000)
     private String notes;
 
+    /** Référence à la licence précédente lors d'un renouvellement (chaîne de dossiers). */
+    @Column(name = "renewed_from_licence_id")
+    private Long renewedFromLicenceId;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -120,6 +124,9 @@ public class Licence {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public Long getRenewedFromLicenceId() { return renewedFromLicenceId; }
+    public void setRenewedFromLicenceId(Long renewedFromLicenceId) { this.renewedFromLicenceId = renewedFromLicenceId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
