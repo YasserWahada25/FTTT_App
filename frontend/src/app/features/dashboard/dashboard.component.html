@@ -49,35 +49,6 @@
 </div>
 
 <div class="dashboard-grid">
-    <!-- Recent Matches -->
-    <mat-card class="dash-card">
-        <mat-card-header>
-            <mat-icon mat-card-avatar class="card-icon">sports</mat-icon>
-            <mat-card-title>Résultats Récents</mat-card-title>
-            <mat-card-subtitle>Derniers matchs joués</mat-card-subtitle>
-            <span class="card-header-spacer"></span>
-            <a mat-button color="primary" routerLink="/app/matches">Voir tout</a>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
-            <div class="matches-list">
-                @for (match of recentMatches; track match.home) {
-                <div class="match-row">
-                    <div class="match-teams">
-                        <span class="team home">{{ match.home }}</span>
-                        <span class="match-score">{{ match.score }}</span>
-                        <span class="team away">{{ match.away }}</span>
-                    </div>
-                    <div class="match-meta">
-                        <span class="competition-name">{{ match.competition }}</span>
-                        <app-status-badge [status]="match.status"></app-status-badge>
-                    </div>
-                </div>
-                }
-            </div>
-        </mat-card-content>
-    </mat-card>
-
     <!-- Upcoming Competitions -->
     <mat-card class="dash-card">
         <mat-card-header>
@@ -170,10 +141,6 @@
                 <a class="quick-action" routerLink="/app/venues/new">
                     <mat-icon>add_location</mat-icon>
                     <span>Nouveau Terrain</span>
-                </a>
-                <a class="quick-action" routerLink="/app/rankings">
-                    <mat-icon>leaderboard</mat-icon>
-                    <span>Classements</span>
                 </a>
             </div>
         </mat-card-content>

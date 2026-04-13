@@ -7,4 +7,6 @@ export interface TerrainDTO {
     disponible: boolean;
     prixParHeure: number;
     image?: string;
+    clubId?: number | null;
+    competitionIds?: number[] | null;
 }

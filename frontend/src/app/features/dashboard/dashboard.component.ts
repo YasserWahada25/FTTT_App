@@ -29,16 +29,8 @@ export class DashboardComponent implements OnInit {
         { label: 'Clubs Actifs', value: '124', icon: 'sports_tennis', color: '#1565c0', bg: '#e3f2fd', change: '+3', trend: 'up' },
         { label: 'Licences Actives', value: '5,241', icon: 'badge', color: '#2e7d32', bg: '#e8f5e9', change: '+89', trend: 'up' },
         { label: 'Compétitions', value: '18', icon: 'emoji_events', color: '#f57f17', bg: '#fff8e1', change: '4 en cours', trend: 'neutral' },
-        { label: 'Matchs ce mois', value: '342', icon: 'sports', color: '#6a1b9a', bg: '#f3e5f5', change: '+28', trend: 'up' },
         { label: 'Demandes Licences', value: '37', icon: 'pending_actions', color: '#c62828', bg: '#fce4ec', change: '37 en attente', trend: 'alert' },
         { label: 'Terrains', value: '56', icon: 'stadium', color: '#00695c', bg: '#e0f2f1', change: '51 disponibles', trend: 'neutral' },
-    ];
-
-    recentMatches = [
-        { home: 'A. Hamdi', away: 'M. Trabelsi', score: '3-1', competition: 'Championnat National', date: '2025-03-10', status: 'finished' },
-        { home: 'S. Ben Ali', away: 'K. Jebali', score: '2-3', competition: 'Coupe de Tunisie', date: '2025-03-09', status: 'finished' },
-        { home: 'R. Karoui', away: 'T. Saad', score: '-', competition: 'Championnat Régional', date: '2025-03-12', status: 'scheduled' },
-        { home: 'N. Hmidi', away: 'F. Turki', score: '-', competition: 'Championnat National', date: '2025-03-13', status: 'scheduled' },
     ];
 
     upcomingCompetitions = [

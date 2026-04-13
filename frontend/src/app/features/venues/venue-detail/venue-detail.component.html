@@ -1,0 +1,58 @@
+@if (loading()) {
+<div class="loading-wrap"><mat-spinner diameter="48"></mat-spinner></div>
+} @else if (terrain) {
+<app-page-header
+    [title]="terrain.nom"
+    [subtitle]="terrain.localisation || 'Terrain'"
+    icon="location_on"
+    [breadcrumbs]="[
+        { label: 'Dashboard', route: '/app/dashboard' },
+        { label: 'Terrains', route: '/app/venues' },
+        { label: 'Détail' },
+    ]"
+></app-page-header>
+
+<div class="detail-wrap">
+    <mat-card class="main-card">
+        <div class="header-row">
+            @if (terrain.image) {
+            <img [src]="terrain.image" alt="" class="hero" />
+            } @else {
+            <div class="hero-fallback"><mat-icon>sports_tennis</mat-icon></div>
+            }
+            <div>
+                <app-status-badge [status]="statusForBadge()"></app-status-badge>
+                <p class="meta">{{ terrain.surface || 'Surface non renseignée' }} · {{ terrain.prixParHeure | number : '1.0-2' }} DT/h</p>
+                @if (terrain.clubId) {
+                <p class="meta"><mat-icon class="inline-icon">groups</mat-icon> Club #{{ terrain.clubId }}</p>
+                }
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+        <section class="section">
+            <h3><mat-icon>emoji_events</mat-icon> Compétitions associées</h3>
+            @if (terrain.competitionIds.length === 0) {
+            <p class="muted">Aucune compétition liée pour l’instant.</p>
+            } @else {
+            <mat-chip-set>
+                @for (cid of terrain.competitionIds; track cid) {
+                <mat-chip>
+                    <a class="chip-link" [routerLink]="['/app/competitions', cid]">{{ competitionName(cid) }}</a>
+                </mat-chip>
+                }
+            </mat-chip-set>
+            }
+        </section>
+        <div class="actions">
+            <a mat-stroked-button routerLink="/app/venues"><mat-icon>arrow_back</mat-icon> Liste</a>
+            @if (canEdit()) {
+            <a mat-flat-button color="primary" [routerLink]="['/app/venues', terrain.id, 'edit']"><mat-icon>edit</mat-icon> Modifier</a>
+            } @if (canDelete()) {
+            <button mat-stroked-button color="warn" type="button" (click)="deleteTerrain()">
+                <mat-icon>delete</mat-icon> Supprimer
+            </button>
+            }
+        </div>
+    </mat-card>
+</div>
+}
