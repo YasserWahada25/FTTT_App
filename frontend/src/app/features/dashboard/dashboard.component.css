@@ -197,66 +197,6 @@ mat-card-content {
     padding: 16px !important;
 }
 
-/* Matches List */
-.matches-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.match-row {
-    background: #f8f9ff;
-    border-radius: 10px;
-    padding: 12px;
-}
-
-.match-teams {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 6px;
-}
-
-.team {
-    font-weight: 600;
-    color: #1a1a2e;
-    font-size: 0.875rem;
-}
-
-.home {
-    flex: 1;
-    text-align: right;
-}
-
-.away {
-    flex: 1;
-}
-
-.match-score {
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: #1565c0;
-    background: white;
-    padding: 2px 10px;
-    border-radius: 8px;
-    border: 2px solid #e3f2fd;
-    white-space: nowrap;
-}
-
-.match-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.competition-name {
-    font-size: 0.75rem;
-    color: #9e9e9e;
-    font-style: italic;
-}
-
 /* Competitions List */
 .competitions-list {
     display: flex;

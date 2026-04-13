@@ -56,16 +56,6 @@ export const MENU_ITEMS: MenuItem[] = [
         route: '/app/competitions',
     },
     {
-        label: 'Matchs',
-        icon: 'sports',
-        route: '/app/matches',
-    },
-    {
-        label: 'Classements',
-        icon: 'leaderboard',
-        route: '/app/rankings',
-    },
-    {
         label: 'Terrains',
         icon: 'stadium',
         route: '/app/venues',

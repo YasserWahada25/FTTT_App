@@ -9,16 +9,16 @@ import java.util.List;
 @FeignClient(name = "terrain-service")
 public interface TerrainClient {
 
-    @GetMapping("/terrains")
+    @GetMapping("/api/terrains")
     List<TerrainDTO> getAllTerrains();
 
-    @GetMapping("/terrains/{id}")
+    @GetMapping("/api/terrains/{id}")
     TerrainDTO getTerrainById(@PathVariable Long id);
 
-    @GetMapping("/terrains/disponibles")
+    @GetMapping("/api/terrains/disponibles")
     List<TerrainDTO> getTerrainsDisponibles();
 
-    @PatchMapping("/terrains/{id}/disponibilite")
+    @PatchMapping("/api/terrains/{id}/disponibilite")
     TerrainDTO changerDisponibilite(
             @PathVariable Long id,
             @RequestParam boolean disponible

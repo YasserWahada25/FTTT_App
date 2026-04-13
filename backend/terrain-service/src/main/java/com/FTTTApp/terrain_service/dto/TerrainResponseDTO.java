@@ -1,15 +1,12 @@
-package com.FTTTApp.club_service.DTO;
+package com.FTTTApp.terrain_service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class TerrainDTO {
+public class TerrainResponseDTO {
     private Long id;
     private String nom;
     private String surface;
@@ -18,5 +15,5 @@ public class TerrainDTO {
     private double prixParHeure;
     private String image;
     private Long clubId;
-    private List<Long> competitionIds;
+    private List<Long> competitionIds = new ArrayList<>();
 }

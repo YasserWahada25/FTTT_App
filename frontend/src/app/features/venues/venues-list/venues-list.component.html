@@ -1,20 +1,24 @@
-<app-page-header title="Espaces & Terrains" subtitle="Gérez les infrastructures et réservations" icon="location_on"
-    [breadcrumbs]="[{label:'Dashboard', route:'/app/dashboard'},{label:'Terrains'}]"
-    [actions]="[{label:'Nouveau Terrain', icon:'add', action:emptyAction}]">
-</app-page-header>
+<app-page-header
+    title="Terrains"
+    subtitle="Infrastructures et liaison aux compétitions"
+    icon="location_on"
+    [breadcrumbs]="[{ label: 'Dashboard', route: '/app/dashboard' }, { label: 'Terrains' }]"
+    [actions]="headerActions"
+></app-page-header>
 
 <mat-card class="filter-card">
     <div class="filters">
-        <mat-form-field appearance="outline" style="flex:1;min-width:200px">
-            <mat-label>Rechercher...</mat-label><mat-icon matPrefix>search</mat-icon>
+        <mat-form-field appearance="outline" style="flex: 1; min-width: 200px">
+            <mat-label>Rechercher…</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
             <input matInput [(ngModel)]="search" (ngModelChange)="filter()" />
         </mat-form-field>
-        <mat-form-field appearance="outline" style="min-width:150px">
-            <mat-label>Type</mat-label>
-            <mat-select [(ngModel)]="selectedType" (ngModelChange)="filter()">
+        <mat-form-field appearance="outline" style="min-width: 160px">
+            <mat-label>Disponibilité</mat-label>
+            <mat-select [(ngModel)]="disponibleFilter" (ngModelChange)="filter()">
                 <mat-option value="">Tous</mat-option>
-                <mat-option value="indoor">Intérieur</mat-option>
-                <mat-option value="outdoor">Extérieur</mat-option>
+                <mat-option value="yes">Disponible</mat-option>
+                <mat-option value="no">Indisponible</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
@@ -24,34 +28,47 @@
 <div class="loading-container"><mat-spinner diameter="40"></mat-spinner></div>
 } @else {
 <div class="venues-grid">
-    @for (venue of filtered; track venue.id) {
+    @for (t of filtered; track t.id) {
     <mat-card class="venue-card">
         <div class="venue-image">
-            <mat-icon class="venue-placeholder-icon">business</mat-icon>
-            <div class="type-tag">{{ venue.type === 'indoor' ? 'Indoor' : 'Outdoor' }}</div>
+            @if (t.image) {
+            <img [src]="t.image" alt="" class="venue-img" />
+            } @else {
+            <mat-icon class="venue-placeholder-icon">sports_tennis</mat-icon>
+            }
+            <div class="type-tag">{{ t.prixParHeure | number : '1.0-0' }} DT/h</div>
         </div>
         <div class="venue-content">
             <div class="venue-title">
-                <h3>{{ venue.name }}</h3>
-                <app-status-badge [status]="venue.status"></app-status-badge>
+                <h3>{{ t.nom }}</h3>
+                <app-status-badge [status]="statusForBadge(t)"></app-status-badge>
             </div>
-            <p class="club-link"><mat-icon>sports_tennis</mat-icon>{{ venue.clubName }}</p>
-            <mat-divider style="margin:12px 0"></mat-divider>
+            <p class="club-link">
+                <mat-icon>place</mat-icon>
+                {{ t.localisation || '—' }}
+            </p>
+            <mat-divider style="margin: 12px 0"></mat-divider>
             <div class="venue-specs">
-                <div class="spec-item"><mat-icon>straighten</mat-icon>{{ venue.surface }}</div>
-                <div class="spec-item"><mat-icon>groups</mat-icon>{{ venue.capacity }} places</div>
-                <div class="spec-item"><mat-icon>table_restaurant</mat-icon>{{ venue.tables }} tables</div>
-                <div class="spec-item"><mat-icon>place</mat-icon>{{ venue.city }}</div>
-            </div>
-            <div class="amenities">
-                @for (amenity of venue.amenities; track amenity) {
-                <span class="amenity-chip">{{ amenity }}</span>
+                <div class="spec-item"><mat-icon>texture</mat-icon>{{ t.surface || '—' }}</div>
+                @if (t.clubId) {
+                <div class="spec-item"><mat-icon>groups</mat-icon>Club #{{ t.clubId }}</div>
                 }
+                <div class="spec-item">
+                    <mat-icon>emoji_events</mat-icon>
+                    {{ t.competitionIds.length }} compétition(s)
+                </div>
             </div>
             <div class="venue-actions">
-                <a mat-stroked-button [routerLink]="['/app/venues', venue.id]" style="flex:1">Détails</a>
-                <a mat-flat-button color="primary" [routerLink]="['/app/venues', venue.id, 'reservations']"
-                    style="flex:1">Planning</a>
+                <a mat-stroked-button [routerLink]="['/app/venues', t.id]" style="flex: 1">Détails</a>
+                @if (canManage(t)) {
+                <a mat-flat-button color="primary" [routerLink]="['/app/venues', t.id, 'edit']" style="flex: 1"
+                    >Modifier</a
+                >
+                } @if (canDelete() && canManage(t)) {
+                <button mat-icon-button color="warn" type="button" (click)="deleteTerrain(t, $event)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                }
             </div>
         </div>
     </mat-card>

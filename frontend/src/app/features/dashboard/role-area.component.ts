@@ -61,7 +61,7 @@ const ROLE_AREA_CONFIG: Record<RoleAreaKey, RoleAreaConfig> = {
     summary:
       'Votre espace coach est pret. La redirection se fait automatiquement apres connexion.',
     nextStep:
-      'Commencez par votre profil puis utilisez les ecrans competitions et matchs deja disponibles.',
+      'Commencez par votre profil puis consultez les competitions deja disponibles.',
     actions: [
       { label: 'Mon profil', route: '/app/profile/me', icon: 'account_circle', variant: 'flat' },
       { label: 'Competitions', route: '/app/competitions', icon: 'emoji_events', variant: 'stroked' },
@@ -74,10 +74,10 @@ const ROLE_AREA_CONFIG: Record<RoleAreaKey, RoleAreaConfig> = {
     summary:
       'Votre espace referee est accessible et les sections autorisees vous sont maintenant ouvertes.',
     nextStep:
-      'Commencez par votre profil puis consultez les ecrans matchs et classements deja accessibles.',
+      'Commencez par votre profil puis consultez les competitions disponibles pour votre activite.',
     actions: [
       { label: 'Mon profil', route: '/app/profile/me', icon: 'account_circle', variant: 'flat' },
-      { label: 'Matchs', route: '/app/matches', icon: 'sports', variant: 'stroked' },
+      { label: 'Competitions', route: '/app/competitions', icon: 'emoji_events', variant: 'stroked' },
     ],
   },
 };

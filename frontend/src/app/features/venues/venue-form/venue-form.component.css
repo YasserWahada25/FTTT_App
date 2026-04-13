@@ -1,0 +1,51 @@
+.loading-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 48px;
+}
+
+.form-layout {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.form-card {
+    padding: 24px !important;
+    border-radius: 16px !important;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.flex {
+    flex: 1;
+    min-width: 200px;
+}
+
+.narrow {
+    width: 180px;
+    min-width: 140px;
+}
+
+.full {
+    width: 100%;
+}
+
+.toggle-row {
+    margin: 12px 0 20px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+}
+
+.my-16 {
+    margin: 16px 0 !important;
+}
