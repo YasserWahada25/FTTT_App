@@ -4,6 +4,30 @@
     icon="dashboard"
 ></app-page-header>
 
+@if (hasClubAffiliation()) {
+<div class="club-affiliation-banner" role="status">
+    <div class="club-affiliation-icon-wrap">
+        <mat-icon aria-hidden="true">groups</mat-icon>
+    </div>
+    <div class="club-affiliation-body">
+        <span class="club-affiliation-label">Rattachement club</span>
+        <span class="club-affiliation-name">{{ clubAffiliationName() }}</span>
+        <span class="club-affiliation-hint">{{ clubAffiliationHint() }}</span>
+    </div>
+    @if (clubDetailPath(); as clubId) {
+    <a
+        mat-stroked-button
+        color="primary"
+        class="club-affiliation-cta"
+        [routerLink]="['/app/clubs', clubId]"
+    >
+        <mat-icon>chevron_right</mat-icon>
+        Voir le club
+    </a>
+    }
+</div>
+}
+
 <!-- KPI Cards -->
 <div class="kpi-grid">
     @for (kpi of kpis; track kpi.label) {

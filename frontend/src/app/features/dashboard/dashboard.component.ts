@@ -65,4 +65,42 @@ export class DashboardComponent implements OnInit {
         if (hour < 18) return 'Bon après-midi';
         return 'Bonsoir';
     }
+
+    /** Profil lié à un club (données session : claim / profil métier). */
+    hasClubAffiliation(): boolean {
+        const u = this.currentUser;
+        return !!(u?.clubId || (u?.clubName && u.clubName.trim().length > 0));
+    }
+
+    clubAffiliationName(): string {
+        const u = this.currentUser;
+        const name = u?.clubName?.trim();
+        if (name) return name;
+        if (u?.clubId) return `Club #${u.clubId}`;
+        return '';
+    }
+
+    clubAffiliationHint(): string {
+        const u = this.currentUser;
+        const role = u?.role;
+        if (role === 'CLUB_MANAGER') {
+            return 'Vous gérez ce club sur la plateforme.';
+        }
+        if (role === 'COACH') {
+            return 'Votre compte entraîneur est rattaché à cet effectif.';
+        }
+        if (role === 'PLAYER') {
+            return 'Votre compte joueur est rattaché à ce club.';
+        }
+        return 'Votre compte est associé à ce club.';
+    }
+
+    /** Identifiant club pour le lien « Voir le club » (évite les assertions dans le template). */
+    clubDetailPath(): string | null {
+        const id = this.currentUser?.clubId;
+        if (id === undefined || id === null || id === '') {
+            return null;
+        }
+        return String(id);
+    }
 }

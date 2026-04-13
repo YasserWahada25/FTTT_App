@@ -1,6 +1,6 @@
 <app-page-header title="Gestion des Clubs" subtitle="Gérez les clubs affiliés à la FTTT" icon="sports_tennis"
     [breadcrumbs]="[{label:'Dashboard', route:'/app/dashboard'},{label:'Clubs'}]"
-    [actions]="[{label:'Nouveau Club', icon:'add', action: emptyAction}]"></app-page-header>
+    [actions]="headerActions"></app-page-header>
 
 <!-- Filters -->
 <mat-card class="filter-card">
@@ -39,7 +39,11 @@
     @for (club of filteredClubs; track club.id) {
     <mat-card class="club-card">
         <div class="club-header">
+            @if (club.logo) {
+            <img [src]="club.logo" alt="" class="club-logo-img" />
+            } @else {
             <div class="club-logo">{{ club.name[0] }}</div>
+            }
             <div class="club-info">
                 <h3>{{ club.name }}</h3>
                 <p class="club-code">{{ club.code }}</p>
@@ -49,7 +53,7 @@
         <mat-divider class="divider"></mat-divider>
         <div class="club-details">
             <div class="detail-item"><mat-icon>location_on</mat-icon>{{ club.city }}, {{ club.region }}</div>
-            <div class="detail-item"><mat-icon>person</mat-icon>{{ club.managerName }}</div>
+            <div class="detail-item"><mat-icon>person</mat-icon>{{ club.managerUserId || '—' }}</div>
             <div class="detail-item"><mat-icon>group</mat-icon>{{ club.membersCount }} membres</div>
             <div class="detail-item"><mat-icon>calendar_today</mat-icon>Fondé en {{ club.foundedYear }}</div>
         </div>
@@ -57,9 +61,11 @@
             <a mat-stroked-button [routerLink]="['/app/clubs', club.id]" style="flex:1">
                 <mat-icon>visibility</mat-icon> Détails
             </a>
+            @if (canEditClub(club)) {
             <a mat-flat-button color="primary" [routerLink]="['/app/clubs', club.id, 'edit']" style="flex:1">
                 <mat-icon>edit</mat-icon> Modifier
             </a>
+            }
         </div>
     </mat-card>
     }

@@ -320,6 +320,23 @@ a {
   max-height: 320px !important;
 }
 
+/* mat-select dans MatDialog : panneau lisible et au-dessus du contenu */
+.add-member-select-panel.mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.12) !important;
+  max-height: min(50vh, 280px) !important;
+}
+
+.club-manager-form-select-panel.mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.12) !important;
+  max-height: min(55vh, 360px) !important;
+}
+
 @media (max-width: 720px) {
   .auth-link-grid {
     grid-template-columns: 1fr;

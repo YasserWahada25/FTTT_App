@@ -535,6 +535,11 @@ export class AuthService {
       this.readString(idPayload?.['family_name']) ??
       'Utilisateur';
 
+    const clubId =
+      this.readString(accessPayload['club_id']) ?? this.readString(accessPayload['clubId']);
+    const clubName =
+      this.readString(accessPayload['club_name']) ?? this.readString(accessPayload['clubName']);
+
     return {
       id: this.readString(accessPayload['sub']) ?? username,
       username,
@@ -546,6 +551,8 @@ export class AuthService {
       status: 'active',
       createdAt: '',
       updatedAt: '',
+      ...(clubId ? { clubId } : {}),
+      ...(clubName ? { clubName } : {}),
     };
   }
 

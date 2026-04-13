@@ -18,8 +18,10 @@ import {
 } from '../../../shared/components/page-header/page-header.component';
 import { ProfilesService } from '../services/profiles.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ClubsService } from '../../clubs/services/clubs.service';
 import { Profile } from '../../../core/models/profile.model';
 import { User } from '../../../core/models/user.model';
+import { Club } from '../../../core/models/club.model';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 
 @Component({
@@ -50,6 +52,8 @@ export class MyProfileComponent implements OnInit {
 
   profile: Profile | undefined;
   currentUser: User | null = null;
+  /** Clubs où le compte est membre (source club-service, pas seulement le JWT). */
+  readonly memberClubs = signal<Club[]>([]);
 
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -65,6 +69,7 @@ export class MyProfileComponent implements OnInit {
 
   constructor(
     private readonly profilesService: ProfilesService,
+    private readonly clubsService: ClubsService,
     private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar
   ) {
@@ -98,6 +103,17 @@ export class MyProfileComponent implements OnInit {
       this.patchForm(this.currentUser, data);
       this.loading.set(false);
     });
+
+    this.clubsService.getMyMemberClubs().subscribe((clubs) => this.memberClubs.set(clubs));
+  }
+
+  /** Affichage club : priorité aux rattachements réels (membres du club). */
+  displayAffiliatedClubs(): string {
+    const clubs = this.memberClubs();
+    if (clubs.length > 0) {
+      return clubs.map((c) => c.name).join(', ');
+    }
+    return this.currentUser?.clubName?.trim() || 'Aucun club affilié';
   }
 
   startEdit(): void {

@@ -1,3 +1,79 @@
+/* Rattachement club (utilisateurs avec clubId / clubName en session) */
+.club-affiliation-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e8eaf6 0%, #e3f2fd 100%);
+    border: 1px solid rgba(21, 101, 192, 0.22);
+    box-shadow: 0 2px 10px rgba(26, 35, 126, 0.08);
+}
+
+.club-affiliation-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a237e, #1565c0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.club-affiliation-icon-wrap mat-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.club-affiliation-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.club-affiliation-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #3949ab;
+}
+
+.club-affiliation-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.25;
+}
+
+.club-affiliation-hint {
+    font-size: 0.82rem;
+    color: rgba(0, 0, 0, 0.58);
+    line-height: 1.35;
+    max-width: 520px;
+}
+
+.club-affiliation-cta {
+    flex-shrink: 0;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+.club-affiliation-cta mat-icon {
+    margin-right: 2px;
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    vertical-align: middle;
+}
+
 /* KPI Grid */
 .kpi-grid {
     display: grid;

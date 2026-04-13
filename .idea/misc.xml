@@ -5,11 +5,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/backend/Eureka-Service/pom.xml" />
-        <option value="$PROJECT_DIR$/backend/Gateway-Service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/Auth-Service/pom.xml" />
-        <option value="$PROJECT_DIR$/backend/Sevice-Profile/pom.xml" />
         <option value="$PROJECT_DIR$/backend/Licences-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/Gateway-Service/pom.xml" />
         <option value="$PROJECT_DIR$/backend/Competition_Service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/Sevice-Profile/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/club-service/pom.xml" />
       </list>
     </option>
   </component>

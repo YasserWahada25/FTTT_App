@@ -27,6 +27,10 @@ public class Club {
     private String website;
     private int foundedYear;
 
+    /** Identifiant Keycloak (sub) du responsable club principal — optionnel. */
+    @Column(length = 128)
+    private String managerUserId;
+
     @Enumerated(EnumType.STRING)
     private ClubStatus status = ClubStatus.active;
 

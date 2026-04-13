@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,8 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ClubsService } from '../services/clubs.service';
 import { Club } from '../../../core/models/club.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { PageAction } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
     selector: 'app-clubs-list',
@@ -35,8 +37,41 @@ export class ClubsListComponent implements OnInit {
     searchTerm = '';
     selectedStatus = '';
 
-    constructor(private clubsService: ClubsService) { }
-    ngOnInit(): void { this.clubsService.getAll().subscribe(c => { this.clubs = c; this.filteredClubs = c; this.loading.set(false); }); }
+    headerActions: PageAction[] = [];
+
+    constructor(
+        private clubsService: ClubsService,
+        private authService: AuthService,
+        private router: Router
+    ) {}
+
+    ngOnInit(): void {
+        if (this.authService.hasRole('ADMIN_FEDERATION')) {
+            this.headerActions = [
+                { label: 'Nouveau club', icon: 'add', action: () => this.goNew() },
+            ];
+        }
+        this.clubsService.getAll().subscribe((c) => {
+            this.clubs = c;
+            this.filteredClubs = c;
+            this.loading.set(false);
+        });
+    }
+
+    goNew(): void {
+        void this.router.navigate(['/app/clubs/new']);
+    }
+
+    canEditClub(club: Club): boolean {
+        if (this.authService.hasRole('ADMIN_FEDERATION')) {
+            return true;
+        }
+        if (this.authService.hasRole('CLUB_MANAGER')) {
+            const mine = this.authService.currentUser?.clubId;
+            return !!mine && String(club.id) === String(mine);
+        }
+        return false;
+    }
 
     applyFilter(): void {
         this.filteredClubs = this.clubs.filter(c =>
@@ -45,6 +80,4 @@ export class ClubsListComponent implements OnInit {
         );
     }
     clearFilters(): void { this.searchTerm = ''; this.selectedStatus = ''; this.filteredClubs = this.clubs; }
-
-    emptyAction(): void { }
 }
