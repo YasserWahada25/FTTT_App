@@ -18,11 +18,11 @@ public class Terrain {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nom;           // "Court Central"
+    private String nom;
 
-    private String surface;       // "Terre battue" / "Gazon" / "Dur"
+    private String surface;
 
-    private String localisation;  // "Tunis, Lac 1"
+    private String localisation;
 
     private boolean disponible;   // true / false
 
