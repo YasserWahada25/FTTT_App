@@ -1,33 +1,190 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { Competition, CompetitionRegistration } from '../../../core/models/competition.model';
-
-const MOCK_COMPETITIONS: Competition[] = [
-    { id: 'comp1', name: 'Championnat National 2025', type: 'championship', category: 'Senior Hommes', status: 'open', startDate: '2025-03-20', endDate: '2025-05-30', registrationDeadline: '2025-03-15', location: 'Tunis', venueName: 'Palais des Sports', maxParticipants: 64, currentParticipants: 48, organizerId: '1', organizerName: 'FTTT Admin', prize: '5000 DT', createdAt: '2024-12-01', updatedAt: '2025-01-01' },
-    { id: 'comp2', name: 'Coupe de Tunisie 2025', type: 'cup', category: 'Toutes catégories', status: 'open', startDate: '2025-04-05', endDate: '2025-04-20', registrationDeadline: '2025-03-30', location: 'Sfax', venueName: 'Salle Sportive Sfax', maxParticipants: 32, currentParticipants: 28, organizerId: '1', organizerName: 'FTTT Admin', prize: '3000 DT', createdAt: '2024-12-15', updatedAt: '2025-01-05' },
-    { id: 'comp3', name: 'Championnat des Jeunes', type: 'championship', category: 'Juniors', status: 'draft', startDate: '2025-04-15', endDate: '2025-04-22', registrationDeadline: '2025-04-10', location: 'Sousse', maxParticipants: 40, currentParticipants: 12, organizerId: '1', organizerName: 'FTTT Admin', createdAt: '2025-01-01', updatedAt: '2025-01-10' },
-    { id: 'comp4', name: 'Ligue Régionale Tunis', type: 'league', category: 'Senior Dames', status: 'ongoing', startDate: '2025-01-15', endDate: '2025-04-30', registrationDeadline: '2025-01-10', location: 'Tunis', maxParticipants: 16, currentParticipants: 16, organizerId: '1', organizerName: 'FTTT Admin', createdAt: '2024-11-01', updatedAt: '2025-01-15' },
-];
+import { Observable, catchError, delay, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {
+    Competition,
+    CompetitionApiResponse,
+    CompetitionRegistration,
+    CompetitionWritePayload,
+} from '../../../core/models/competition.model';
 
 const MOCK_REGISTRATIONS: CompetitionRegistration[] = [
-    { id: 'reg1', competitionId: 'comp1', playerId: '3', playerName: 'Ines Trabelsi', clubId: 'c1', clubName: 'Stade Tunisien TT', registrationDate: '2025-02-15', status: 'accepted' },
-    { id: 'reg2', competitionId: 'comp1', playerId: '6', playerName: 'Rania Saad', clubId: 'c2', clubName: 'CA Sportif TT', registrationDate: '2025-02-16', status: 'pending' },
+    {
+        id: 'reg1',
+        competitionId: '1',
+        playerId: '3',
+        playerName: 'Ines Trabelsi',
+        clubId: 'c1',
+        clubName: 'Stade Tunisien TT',
+        registrationDate: '2025-02-15',
+        status: 'accepted',
+    },
+    {
+        id: 'reg2',
+        competitionId: '1',
+        playerId: '6',
+        playerName: 'Rania Saad',
+        clubId: 'c2',
+        clubName: 'CA Sportif TT',
+        registrationDate: '2025-02-16',
+        status: 'pending',
+    },
 ];
 
 @Injectable({ providedIn: 'root' })
 export class CompetitionsService {
-    getAll(): Observable<Competition[]> { return of(MOCK_COMPETITIONS).pipe(delay(300)); }
-    getById(id: string): Observable<Competition | undefined> { return of(MOCK_COMPETITIONS.find(c => c.id === id)).pipe(delay(200)); }
-    create(data: Partial<Competition>): Observable<Competition> {
-        const c = { ...data as Competition, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-        MOCK_COMPETITIONS.push(c); return of(c).pipe(delay(400));
+    private readonly base = '/api/competitions';
+
+    constructor(private readonly http: HttpClient) {}
+
+    getAll(): Observable<Competition[]> {
+        return this.http.get<CompetitionApiResponse[]>(this.base).pipe(
+            map((rows) => rows.map((r) => this.mapApiToCompetition(r))),
+            catchError(() => of([]))
+        );
     }
+
+    getById(id: string): Observable<Competition | undefined> {
+        return this.http.get<CompetitionApiResponse>(`${this.base}/${encodeURIComponent(id)}`).pipe(
+            map((r) => this.mapApiToCompetition(r)),
+            catchError(() => of(undefined))
+        );
+    }
+
+    create(data: CompetitionWritePayload): Observable<Competition> {
+        return this.http
+            .post<CompetitionApiResponse>(this.base, data)
+            .pipe(map((r) => this.mapApiToCompetition(r)));
+    }
+
+    update(id: string, data: CompetitionWritePayload): Observable<Competition> {
+        return this.http
+            .put<CompetitionApiResponse>(`${this.base}/${encodeURIComponent(id)}`, data)
+            .pipe(map((r) => this.mapApiToCompetition(r)));
+    }
+
+    delete(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.base}/${encodeURIComponent(id)}`);
+    }
+
+    publish(id: string): Observable<Competition> {
+        return this.http
+            .post<CompetitionApiResponse>(`${this.base}/${encodeURIComponent(id)}/publish`, {})
+            .pipe(map((r) => this.mapApiToCompetition(r)));
+    }
+
+    unpublish(id: string): Observable<Competition> {
+        return this.http
+            .post<CompetitionApiResponse>(`${this.base}/${encodeURIComponent(id)}/unpublish`, {})
+            .pipe(map((r) => this.mapApiToCompetition(r)));
+    }
+
     getRegistrations(competitionId: string): Observable<CompetitionRegistration[]> {
-        return of(MOCK_REGISTRATIONS.filter(r => r.competitionId === competitionId)).pipe(delay(200));
+        return of(MOCK_REGISTRATIONS.filter((r) => r.competitionId === competitionId)).pipe(delay(200));
     }
+
     register(competitionId: string, playerId: string): Observable<CompetitionRegistration> {
-        const reg: CompetitionRegistration = { id: Date.now().toString(), competitionId, playerId, playerName: 'Player', clubId: 'c1', clubName: 'Club', registrationDate: new Date().toISOString(), status: 'pending' };
-        MOCK_REGISTRATIONS.push(reg); return of(reg).pipe(delay(400));
+        const reg: CompetitionRegistration = {
+            id: Date.now().toString(),
+            competitionId,
+            playerId,
+            playerName: 'Player',
+            clubId: 'c1',
+            clubName: 'Club',
+            registrationDate: new Date().toISOString(),
+            status: 'pending',
+        };
+        MOCK_REGISTRATIONS.push(reg);
+        return of(reg).pipe(delay(400));
+    }
+
+    private mapApiToCompetition(r: CompetitionApiResponse): Competition {
+        const categoryApi = r.category;
+        const type = this.categoryToUiType(categoryApi);
+        const sportLabel = (r.sportCategoryLabel || '').trim();
+        const categoryDisplay = sportLabel || this.categoryApiLabel(categoryApi);
+        const published = !!r.published;
+        const apiStatus = r.status;
+        const status = this.deriveUiStatus(published, apiStatus);
+        const maxP = r.maxParticipants ?? 0;
+        const curP = r.currentParticipants ?? 0;
+
+        return {
+            id: String(r.id),
+            name: r.name,
+            type,
+            category: categoryDisplay,
+            categoryApi,
+            status,
+            apiStatus,
+            published,
+            targetRoles: r.targetRoles ?? [],
+            startDate: r.startDate ?? '',
+            endDate: r.endDate ?? '',
+            registrationDeadline: r.registrationDeadline ?? '',
+            location: r.location ?? '',
+            maxParticipants: maxP,
+            currentParticipants: curP,
+            description: r.description ?? undefined,
+            rules: r.rules ?? undefined,
+            organizerName: r.organizerName ?? '',
+            prize: r.prize ?? undefined,
+            createdAt: r.createdAt ?? undefined,
+        };
+    }
+
+    private deriveUiStatus(published: boolean, api: CompetitionApiResponse['status']): Competition['status'] {
+        if (!published) {
+            return 'draft';
+        }
+        if (api === 'ONGOING') {
+            return 'ongoing';
+        }
+        if (api === 'FINISHED') {
+            return 'finished';
+        }
+        return 'open';
+    }
+
+    private categoryToUiType(c: CompetitionApiResponse['category']): Competition['type'] {
+        switch (c) {
+            case 'CHAMPIONNAT':
+                return 'championship';
+            case 'COUPE':
+                return 'cup';
+            case 'AMICAL':
+                return 'friendly';
+            case 'TOURNOI':
+            default:
+                return 'league';
+        }
+    }
+
+    private categoryApiLabel(c: CompetitionApiResponse['category']): string {
+        const labels: Record<CompetitionApiResponse['category'], string> = {
+            CHAMPIONNAT: 'Championnat',
+            COUPE: 'Coupe',
+            AMICAL: 'Amical',
+            TOURNOI: 'Tournoi / Ligue',
+        };
+        return labels[c] ?? c;
+    }
+
+    /** Pour le formulaire : valeur UI → enum API. */
+    static uiFormatToCategory(
+        type: 'championship' | 'cup' | 'friendly' | 'league'
+    ): CompetitionApiResponse['category'] {
+        switch (type) {
+            case 'championship':
+                return 'CHAMPIONNAT';
+            case 'cup':
+                return 'COUPE';
+            case 'friendly':
+                return 'AMICAL';
+            case 'league':
+            default:
+                return 'TOURNOI';
+        }
     }
 }

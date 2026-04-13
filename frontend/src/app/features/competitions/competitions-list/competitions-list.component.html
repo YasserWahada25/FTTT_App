@@ -1,6 +1,6 @@
 <app-page-header title="Compétitions" subtitle="Gérez les compétitions et tournois" icon="emoji_events"
     [breadcrumbs]="[{label:'Dashboard', route:'/app/dashboard'},{label:'Compétitions'}]"
-    [actions]="[{label:'Nouvelle Compétition', icon:'add', action:goToNewCompetition.bind(this)}]">
+    [actions]="headerActions">
 </app-page-header>
 
 <mat-card class="filter-card">
@@ -18,7 +18,6 @@
                 <mat-option value="ongoing">En cours</mat-option>
                 <mat-option value="draft">Brouillon</mat-option>
                 <mat-option value="finished">Terminé</mat-option>
-                <mat-option value="cancelled">Annulé</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
@@ -49,9 +48,9 @@
         </div>
         <div class="participants-bar">
             <div class="bar-bg">
-                <div class="bar-fill" [style.width.%]="(comp.currentParticipants / comp.maxParticipants)*100"></div>
+                <div class="bar-fill" [style.width.%]="comp.maxParticipants ? (comp.currentParticipants / comp.maxParticipants)*100 : 0"></div>
             </div>
-            <span>{{ ((comp.currentParticipants/comp.maxParticipants)*100).toFixed(0) }}%</span>
+            <span>{{ comp.maxParticipants ? ((comp.currentParticipants/comp.maxParticipants)*100).toFixed(0) : 0 }}%</span>
         </div>
         <div class="comp-actions">
             <a mat-stroked-button [routerLink]="['/app/competitions', comp.id]" style="flex:1">Détails</a>

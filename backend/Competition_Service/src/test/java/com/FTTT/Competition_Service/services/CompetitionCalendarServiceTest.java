@@ -44,7 +44,8 @@ class CompetitionCalendarServiceTest {
         competition1.setLocation("Tunisie");
         competition1.setStartDate(LocalDateTime.of(2026, 3, 1, 10, 0));
         competition1.setCategory(CompetitionCategory.CHAMPIONNAT);
-        competition1.setStatus(CompetitionStatus.SCHEDULED);
+        competition1.setStatus(CompetitionStatus.UPCOMING);
+        competition1.setPublished(true);
 
         competition2 = new Competition();
         competition2.setId(2L);
@@ -52,7 +53,8 @@ class CompetitionCalendarServiceTest {
         competition2.setLocation("France");
         competition2.setStartDate(LocalDateTime.of(2026, 4, 10, 15, 0));
         competition2.setCategory(CompetitionCategory.COUPE);
-        competition2.setStatus(CompetitionStatus.SCHEDULED);
+        competition2.setStatus(CompetitionStatus.UPCOMING);
+        competition2.setPublished(true);
     }
 
     @Test
@@ -64,7 +66,7 @@ class CompetitionCalendarServiceTest {
 
         // When
         List<CompetitionCalendarDTO> result = competitionService.getCompetitionCalendar(
-                null, null, null, null);
+                null, null, null, null, null);
 
         // Then
         assertNotNull(result);
@@ -92,7 +94,7 @@ class CompetitionCalendarServiceTest {
 
         // When
         List<CompetitionCalendarDTO> result = competitionService.getCompetitionCalendar(
-                CompetitionCategory.CHAMPIONNAT, null, null, null);
+                CompetitionCategory.CHAMPIONNAT, null, null, null, null);
 
         // Then
         assertNotNull(result);
@@ -110,7 +112,7 @@ class CompetitionCalendarServiceTest {
 
         // When
         List<CompetitionCalendarDTO> result = competitionService.getCompetitionCalendar(
-                null, "France", null, null);
+                null, "France", null, null, null);
 
         // Then
         assertNotNull(result);
@@ -126,7 +128,7 @@ class CompetitionCalendarServiceTest {
 
         // When
         List<CompetitionCalendarDTO> result = competitionService.getCompetitionCalendar(
-                null, null, null, null);
+                null, null, null, null, null);
 
         // Then
         assertNotNull(result);

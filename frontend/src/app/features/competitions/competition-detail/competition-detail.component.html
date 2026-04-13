@@ -114,8 +114,8 @@
                         [routerLink]="['/app/competitions', competition.id, 'register']">
                         <mat-icon>how_to_reg</mat-icon> S'inscrire
                     </button>
-                    } @else if (competition.status === 'draft') {
-                    <div class="status-alert">Cette compétition est en brouillon, les inscriptions sont fermées.</div>
+                    } @else if (!competition.published || competition.status === 'draft') {
+                    <div class="status-alert">Brouillon ou non publiée — inscriptions fermées.</div>
                     } @else if (competition.status === 'ongoing') {
                     <div class="status-alert info">La compétition a commencé. Suivez les résultats !</div>
                     } @else {
@@ -137,15 +137,22 @@
                         [routerLink]="['/app/competitions', competition.id, 'registrations']">
                         <mat-icon>checklist</mat-icon> Gérer les participants
                     </button>
-                    <button mat-stroked-button class="full-width mb-12">
-                        <mat-icon>edit</mat-icon> Modifier
+                    <button mat-stroked-button class="full-width mb-12" type="button" disabled>
+                        <mat-icon>edit</mat-icon> Modifier (bientôt)
                     </button>
-                    @if (competition.status === 'draft') {
-                    <button mat-flat-button style="background-color: #4caf50; color: white;" class="full-width mb-12">
-                        <mat-icon>publish</mat-icon> Publier / Ouvrir
+                    @if (!competition.published) {
+                    <button mat-flat-button style="background-color: #4caf50; color: white;" class="full-width mb-12"
+                        type="button" (click)="publish()" [disabled]="adminBusy()">
+                        <mat-icon>publish</mat-icon> Publier
+                    </button>
+                    } @else {
+                    <button mat-stroked-button color="primary" class="full-width mb-12" type="button"
+                        (click)="unpublish()" [disabled]="adminBusy()">
+                        <mat-icon>unpublished</mat-icon> Dépublier
                     </button>
                     }
-                    <button mat-stroked-button color="warn" class="full-width" (click)="deleteComp()">
+                    <button mat-stroked-button color="warn" class="full-width" type="button" (click)="deleteComp()"
+                        [disabled]="adminBusy()">
                         <mat-icon>delete</mat-icon> Supprimer
                     </button>
                 </div>

@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { CompetitionsService } from '../services/competitions.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { CompetitionWritePayload } from '../../../core/models/competition.model';
 
 @Component({
     selector: 'app-competition-form',
@@ -34,14 +35,22 @@ export class CompetitionFormComponent implements OnInit {
     competitionForm: FormGroup;
     loading = signal(false);
 
-    types = [
+    types: { value: 'championship' | 'cup' | 'friendly' | 'league'; label: string }[] = [
         { value: 'championship', label: 'Championnat' },
         { value: 'cup', label: 'Coupe' },
-        { value: 'league', label: 'Ligue' },
-        { value: 'friendly', label: 'Amical / Tournoi' }
+        { value: 'league', label: 'Ligue / Tournoi' },
+        { value: 'friendly', label: 'Amical' },
     ];
 
     categories = ['Toutes catégories', 'Senior Hommes', 'Senior Dames', 'Junior', 'Cadet', 'Minime'];
+
+    audienceRoles = [
+        { value: 'PLAYER', label: 'Joueurs' },
+        { value: 'COACH', label: 'Entraîneurs' },
+        { value: 'REFEREE', label: 'Arbitres' },
+        { value: 'CLUB_MANAGER', label: 'Responsables club' },
+        { value: 'ADMIN_FEDERATION', label: 'Admin fédération' },
+    ];
 
     constructor(
         private fb: FormBuilder,
@@ -61,7 +70,8 @@ export class CompetitionFormComponent implements OnInit {
             maxParticipants: [32, [Validators.required, Validators.min(2), Validators.max(256)]],
             prize: [''],
             description: [''],
-            rules: ['']
+            rules: [''],
+            targetRoles: this.fb.nonNullable.control<string[]>([]),
         });
     }
 
@@ -77,25 +87,25 @@ export class CompetitionFormComponent implements OnInit {
         const formValue = this.competitionForm.getRawValue();
         const currentUser = this.authService.currentUser;
 
-        const newCompetition = {
+        const payload: CompetitionWritePayload = {
             name: formValue.name,
-            type: formValue.type,
-            category: formValue.category,
-            status: 'draft' as const, // Start as draft
-            startDate: formValue.startDate.toISOString().split('T')[0],
-            endDate: formValue.endDate.toISOString().split('T')[0],
-            registrationDeadline: formValue.registrationDeadline.toISOString().split('T')[0],
+            category: CompetitionsService.uiFormatToCategory(formValue.type),
+            sportCategoryLabel: formValue.category,
             location: formValue.location,
+            startDate: this.toLocalDateTimeStart(formValue.startDate),
+            endDate: this.toLocalDateTimeEndOfDay(formValue.endDate),
+            registrationDeadline: this.toLocalDateTimeEndOfDay(formValue.registrationDeadline),
             maxParticipants: formValue.maxParticipants,
             currentParticipants: 0,
-            description: formValue.description,
-            rules: formValue.rules,
-            prize: formValue.prize,
-            organizerId: currentUser?.id || 'admin',
-            organizerName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'FTTT Admin'
+            description: formValue.description || undefined,
+            rules: formValue.rules || undefined,
+            prize: formValue.prize || undefined,
+            organizerName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}`.trim() : 'FTTT Admin',
+            published: false,
+            targetRoles: formValue.targetRoles?.length ? formValue.targetRoles : [],
         };
 
-        this.competitionsService.create(newCompetition).subscribe({
+        this.competitionsService.create(payload).subscribe({
             next: () => {
                 this.snackBar.open('Compétition créée avec succès (Brouillon).', 'Fermer', { duration: 3000, panelClass: ['success-snackbar'] });
                 this.loading.set(false);
@@ -110,5 +120,20 @@ export class CompetitionFormComponent implements OnInit {
 
     goBack(): void {
         this.router.navigate(['/app/competitions']);
+    }
+
+    /** Évite le décalage UTC des `Date` à minuit local (datepicker Material). */
+    private toLocalDateTimeStart(d: Date): string {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}T00:00:00`;
+    }
+
+    private toLocalDateTimeEndOfDay(d: Date): string {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}T23:59:59`;
     }
 }

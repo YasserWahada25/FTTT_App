@@ -4,46 +4,30 @@ import com.FTTT.Competition_Service.dto.CompetitionCalendarDTO;
 import com.FTTT.Competition_Service.dto.CompetitionRequestDTO;
 import com.FTTT.Competition_Service.dto.CompetitionResponseDTO;
 import com.FTTT.Competition_Service.entities.CompetitionCategory;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Interface du service de gestion des compétitions
- */
 public interface CompetitionService {
 
-    /**
-     * Créer une nouvelle compétition
-     */
-    CompetitionResponseDTO createCompetition(CompetitionRequestDTO requestDTO);
+    CompetitionResponseDTO createCompetition(CompetitionRequestDTO requestDTO, Jwt jwt);
 
-    /**
-     * Récupérer toutes les compétitions
-     */
-    List<CompetitionResponseDTO> getAllCompetitions();
+    List<CompetitionResponseDTO> listCompetitions(Jwt jwt);
 
-    /**
-     * Récupérer une compétition par son ID
-     */
-    CompetitionResponseDTO getCompetitionById(Long id);
+    CompetitionResponseDTO getCompetitionById(Long id, Jwt jwt);
 
-    /**
-     * Mettre à jour une compétition existante
-     */
-    CompetitionResponseDTO updateCompetition(Long id, CompetitionRequestDTO requestDTO);
+    CompetitionResponseDTO updateCompetition(Long id, CompetitionRequestDTO requestDTO, Jwt jwt);
 
-    /**
-     * Supprimer une compétition
-     */
-    void deleteCompetition(Long id);
+    void deleteCompetition(Long id, Jwt jwt);
 
-    /**
-     * Récupérer les compétitions pour l'affichage calendrier
-     * avec filtres optionnels
-     */
+    CompetitionResponseDTO publishCompetition(Long id, Jwt jwt);
+
+    CompetitionResponseDTO unpublishCompetition(Long id, Jwt jwt);
+
     List<CompetitionCalendarDTO> getCompetitionCalendar(CompetitionCategory category,
-                                                       String location,
-                                                       LocalDateTime startDate,
-                                                       LocalDateTime endDate);
+                                                        String location,
+                                                        LocalDateTime startDate,
+                                                        LocalDateTime endDate,
+                                                        Jwt jwt);
 }

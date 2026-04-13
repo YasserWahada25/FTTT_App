@@ -38,6 +38,36 @@ public class Competition {
     @Column(nullable = false)
     private CompetitionCategory category;
 
+    /** Libellé métier (ex. Senior Hommes), distinct du type CHAMPIONNAT / COUPE. */
+    @Column(name = "sport_category_label", length = 120)
+    private String sportCategoryLabel;
+
+    @Column(name = "organizer_name", length = 255)
+    private String organizerName;
+
+    @Column(columnDefinition = "TEXT")
+    private String rules;
+
+    @Column(length = 500)
+    private String prize;
+
+    @Column(name = "max_participants")
+    private Integer maxParticipants = 32;
+
+    @Column(name = "current_participants")
+    private Integer currentParticipants = 0;
+
+    @Column(name = "registration_deadline")
+    private LocalDateTime registrationDeadline;
+
+    /** Visible pour le public cible (utilisateurs authentifiés correspondant à {@link #targetRolesCsv}). */
+    @Column(nullable = false)
+    private boolean published = false;
+
+    /** Rôles cibles séparés par virgule (ex. PLAYER,COACH). Vide ou null = tous les rôles authentifiés. */
+    @Column(name = "target_roles_csv", length = 512)
+    private String targetRolesCsv;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -129,6 +159,78 @@ public class Competition {
 
     public void setCategory(CompetitionCategory category) {
         this.category = category;
+    }
+
+    public String getSportCategoryLabel() {
+        return sportCategoryLabel;
+    }
+
+    public void setSportCategoryLabel(String sportCategoryLabel) {
+        this.sportCategoryLabel = sportCategoryLabel;
+    }
+
+    public String getOrganizerName() {
+        return organizerName;
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
+    public String getPrize() {
+        return prize;
+    }
+
+    public void setPrize(String prize) {
+        this.prize = prize;
+    }
+
+    public Integer getMaxParticipants() {
+        return maxParticipants;
+    }
+
+    public void setMaxParticipants(Integer maxParticipants) {
+        this.maxParticipants = maxParticipants;
+    }
+
+    public Integer getCurrentParticipants() {
+        return currentParticipants;
+    }
+
+    public void setCurrentParticipants(Integer currentParticipants) {
+        this.currentParticipants = currentParticipants;
+    }
+
+    public LocalDateTime getRegistrationDeadline() {
+        return registrationDeadline;
+    }
+
+    public void setRegistrationDeadline(LocalDateTime registrationDeadline) {
+        this.registrationDeadline = registrationDeadline;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public String getTargetRolesCsv() {
+        return targetRolesCsv;
+    }
+
+    public void setTargetRolesCsv(String targetRolesCsv) {
+        this.targetRolesCsv = targetRolesCsv;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

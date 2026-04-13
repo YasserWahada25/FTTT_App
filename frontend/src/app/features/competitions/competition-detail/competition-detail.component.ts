@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { CompetitionsService } from '../services/competitions.service';
@@ -20,7 +21,7 @@ import { AuthService } from '../../../core/services/auth.service';
     imports: [
         CommonModule, RouterLink,
         MatCardModule, MatButtonModule, MatIconModule,
-        MatDividerModule, MatChipsModule, MatProgressBarModule, MatProgressSpinnerModule,
+        MatDividerModule, MatChipsModule,         MatProgressBarModule, MatProgressSpinnerModule, MatSnackBarModule,
         PageHeaderComponent, StatusBadgeComponent
     ],
     templateUrl: './competition-detail.component.html',
@@ -30,6 +31,7 @@ export class CompetitionDetailComponent implements OnInit {
     competition: Competition | undefined;
     loading = signal(true);
     error = signal(false);
+    adminBusy = signal(false);
 
     typeLabels: Record<string, string> = { championship: 'Championnat', cup: 'Coupe', friendly: 'Amical', league: 'Ligue' };
     statusColor: Record<string, string> = { open: '#2e7d32', ongoing: '#1565c0', draft: '#f57f17', finished: '#6a1b9a', cancelled: '#c62828' };
@@ -38,8 +40,9 @@ export class CompetitionDetailComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private competitionsService: CompetitionsService,
-        public authService: AuthService
-    ) { }
+        public authService: AuthService,
+        private snackBar: MatSnackBar
+    ) {}
 
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
@@ -66,7 +69,7 @@ export class CompetitionDetailComponent implements OnInit {
     }
 
     getFillPercentage(): number {
-        if (!this.competition) return 0;
+        if (!this.competition || !this.competition.maxParticipants) return 0;
         return (this.competition.currentParticipants / this.competition.maxParticipants) * 100;
     }
 
@@ -74,10 +77,52 @@ export class CompetitionDetailComponent implements OnInit {
         return this.authService.hasRole(['ADMIN_FEDERATION']);
     }
 
+    publish(): void {
+        if (!this.competition) return;
+        this.adminBusy.set(true);
+        this.competitionsService.publish(this.competition.id).subscribe({
+            next: (c) => {
+                this.competition = c;
+                this.snackBar.open('Compétition publiée.', 'Fermer', { duration: 3500 });
+                this.adminBusy.set(false);
+            },
+            error: () => {
+                this.snackBar.open('Impossible de publier (droits ou serveur).', 'Fermer', { duration: 4000 });
+                this.adminBusy.set(false);
+            },
+        });
+    }
+
+    unpublish(): void {
+        if (!this.competition) return;
+        this.adminBusy.set(true);
+        this.competitionsService.unpublish(this.competition.id).subscribe({
+            next: (c) => {
+                this.competition = c;
+                this.snackBar.open('Compétition repassée en brouillon.', 'Fermer', { duration: 3500 });
+                this.adminBusy.set(false);
+            },
+            error: () => {
+                this.snackBar.open('Impossible de dépublier.', 'Fermer', { duration: 4000 });
+                this.adminBusy.set(false);
+            },
+        });
+    }
+
     deleteComp(): void {
-        // Only implemented visually
-        if (confirm('Voulez-vous vraiment annuler/supprimer cette compétition ?')) {
-            this.router.navigate(['/app/competitions']);
+        if (!this.competition || !confirm('Supprimer définitivement cette compétition ?')) {
+            return;
         }
+        this.adminBusy.set(true);
+        this.competitionsService.delete(this.competition.id).subscribe({
+            next: () => {
+                this.snackBar.open('Compétition supprimée.', 'Fermer', { duration: 2500 });
+                this.router.navigate(['/app/competitions']);
+            },
+            error: () => {
+                this.snackBar.open('Suppression impossible.', 'Fermer', { duration: 4000 });
+                this.adminBusy.set(false);
+            },
+        });
     }
 }

@@ -119,6 +119,16 @@
                         <textarea matInput formControlName="rules" rows="2"
                             placeholder="Ex: Règlement ITTF applicable..."></textarea>
                     </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width mt-16">
+                        <mat-label>Publication — utilisateurs cibles (rôles)</mat-label>
+                        <mat-select formControlName="targetRoles" multiple>
+                            @for (r of audienceRoles; track r.value) {
+                            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+                            }
+                        </mat-select>
+                        <mat-hint>Laissez vide pour tous les utilisateurs connectés. Sinon, seuls les rôles choisis verront la compétition une fois publiée.</mat-hint>
+                    </mat-form-field>
                 </mat-card-content>
 
                 <mat-divider></mat-divider>

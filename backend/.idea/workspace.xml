@@ -5,28 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="773bcf42-2910-46f6-b3bd-1779cdeb643c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth-Service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Auth-Service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Auth-Service/src/main/java/com/FTTTApp/Auth_Service/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Competition_Service/src/main/java/com/FTTT/Competition_Service/controllers/CompetitionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Competition_Service/src/main/java/com/FTTT/Competition_Service/controllers/CompetitionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gateway-Service/src/main/java/com/FTTTApp/Gateway_Service/GatewayServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Gateway-Service/src/main/java/com/FTTTApp/Gateway_Service/GatewayServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/controllers/LicenceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/controllers/LicenceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/dto/LicenceResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/dto/LicenceResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/entities/Licence.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/entities/Licence.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/repositories/LicenceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/repositories/LicenceRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/services/LicenceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/java/com/FTTTApp/Licences_Service/services/LicenceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Licences-Service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Licences-Service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sevice-Profile/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Sevice-Profile/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/controllers/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Sevice-Profile/src/main/java/com/FTTTApp/Sevice_Profile/controllers/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Client/TerrainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Client/TerrainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Controllor/ClubController.java" beforeDir="false" afterPath="$PROJECT_DIR$/club-service/src/main/java/com/FTTTApp/club_service/Controllor/ClubController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/terrain-service/src/main/java/com/FTTTApp/terrain_service/TerrainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/terrain-service/src/main/java/com/FTTTApp/terrain_service/TerrainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +153,7 @@
       <workItem from="1775724190909" duration="6000" />
       <workItem from="1775834550632" duration="382000" />
       <workItem from="1776071659055" duration="13000" />
-      <workItem from="1776071696742" duration="3479000" />
+      <workItem from="1776071696742" duration="4205000" />
     </task>
     <servers />
   </component>

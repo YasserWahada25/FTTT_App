@@ -11,10 +11,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { PageHeaderComponent, PageAction } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { CompetitionsService } from '../services/competitions.service';
 import { Competition } from '../../../core/models/competition.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-competitions-list',
@@ -38,8 +39,26 @@ export class CompetitionsListComponent implements OnInit {
     typeLabels: Record<string, string> = { championship: 'Championnat', cup: 'Coupe', friendly: 'Amical', league: 'Ligue' };
     statusColor: Record<string, string> = { open: '#2e7d32', ongoing: '#1565c0', draft: '#f57f17', finished: '#6a1b9a', cancelled: '#c62828' };
 
-    constructor(private competitionsService: CompetitionsService, private router: Router) { }
-    ngOnInit(): void { this.competitionsService.getAll().subscribe(c => { this.competitions = c; this.filtered = c; this.loading.set(false); }); }
+    headerActions: PageAction[] = [];
+
+    constructor(
+        private competitionsService: CompetitionsService,
+        private router: Router,
+        private authService: AuthService
+    ) {}
+
+    ngOnInit(): void {
+        if (this.authService.hasRole('ADMIN_FEDERATION')) {
+            this.headerActions = [
+                { label: 'Nouvelle Compétition', icon: 'add', action: () => this.goToNewCompetition() },
+            ];
+        }
+        this.competitionsService.getAll().subscribe((c) => {
+            this.competitions = c;
+            this.filtered = c;
+            this.loading.set(false);
+        });
+    }
 
     goToNewCompetition(): void {
         this.router.navigate(['/app/competitions/new']);
