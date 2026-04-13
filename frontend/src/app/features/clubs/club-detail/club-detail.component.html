@@ -1,0 +1,124 @@
+@if (loading()) {
+<div class="loading-wrap">
+    <mat-spinner diameter="48"></mat-spinner>
+</div>
+} @else if (club) {
+<app-page-header [title]="club.name" [subtitle]="club.code + ' · ' + club.city" icon="sports_tennis" [breadcrumbs]="[
+        { label: 'Dashboard', route: '/app/dashboard' },
+        { label: 'Clubs', route: '/app/clubs' },
+        { label: 'Détail' }
+    ]">
+</app-page-header>
+
+<div class="detail-grid">
+    <mat-card class="main-card">
+        <div class="header-row">
+            @if (club.logo) {
+            <img #clubLogo [src]="club.logo" alt="" class="logo" (error)="clubLogo.style.display='none'" />
+            } @else {
+            <div class="logo-fallback">{{ club.name[0] }}</div>
+            }
+            <div class="header-text">
+                <app-status-badge [status]="club.status"></app-status-badge>
+                <p class="meta">{{ club.region }} · Fondé en {{ club.foundedYear }}</p>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="info-blocks">
+            <div><mat-icon>location_on</mat-icon> {{ club.address || '—' }}, {{ club.city }}</div>
+            <div><mat-icon>phone</mat-icon> {{ club.phone || '—' }}</div>
+            <div><mat-icon>email</mat-icon> {{ club.email || '—' }}</div>
+            @if (club.website) {
+            <div><mat-icon>language</mat-icon> <a [href]="club.website" target="_blank" rel="noopener">{{ club.website }}</a></div>
+            }
+            <div><mat-icon>badge</mat-icon> Responsable : {{ managerDisplayLine() }}</div>
+            <div><mat-icon>group</mat-icon> {{ club.membersCount }} membre(s)</div>
+        </div>
+        <div class="actions-row">
+            <a mat-stroked-button routerLink="/app/clubs">
+                <mat-icon>arrow_back</mat-icon> Liste
+            </a>
+            @if (canEditClub()) {
+            <a mat-flat-button color="primary" [routerLink]="['/app/clubs', club.id, 'edit']">
+                <mat-icon>edit</mat-icon> Modifier
+            </a>
+            }
+            @if (auth.hasRole('ADMIN_FEDERATION')) {
+            <button mat-stroked-button color="warn" type="button" (click)="deleteClub()">
+                <mat-icon>delete</mat-icon> Supprimer
+            </button>
+            }
+        </div>
+    </mat-card>
+
+    <mat-card class="side-card">
+        <h3><mat-icon>groups</mat-icon> Membres du club</h3>
+        <p class="side-card-lead">Joueurs et entraîneurs rattachés à l’effectif de ce club.</p>
+        @if (canManageMembers()) {
+        <button mat-flat-button color="primary" class="mb-12" type="button" (click)="openAddMember()">
+            <mat-icon>person_add</mat-icon> Associer joueur ou entraîneur
+        </button>
+        }
+        @if (membersLoading()) {
+        <mat-spinner diameter="32"></mat-spinner>
+        } @else {
+        <table mat-table [dataSource]="members" class="members-table">
+            <ng-container matColumnDef="member">
+                <th mat-header-cell *matHeaderCellDef>Membre</th>
+                <td mat-cell *matCellDef="let row">
+                    <div
+                        class="member-cell"
+                        [matTooltip]="memberTechnicalIdHint(row)"
+                        matTooltipShowDelay="400"
+                    >
+                        <span class="member-name">{{ memberDisplayName(row) }}</span>
+                        <span class="member-email">{{ memberEmailLine(row) }}</span>
+                    </div>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="clubLink">
+                <th mat-header-cell *matHeaderCellDef>Rattachement</th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-chip-set class="club-link-chip-set">
+                        <mat-chip class="club-attach-chip">
+                            <mat-icon class="chip-leading-icon">how_to_reg</mat-icon>
+                            {{ clubAttachmentChipText(row) }}
+                        </mat-chip>
+                    </mat-chip-set>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="joinedAt">
+                <th mat-header-cell *matHeaderCellDef>Depuis</th>
+                <td mat-cell *matCellDef="let row">{{ row.joinedAt | date : 'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let row">
+                    @if (canManageMembers()) {
+                    <button mat-icon-button color="warn" type="button" (click)="removeMember(row)" matTooltip="Retirer">
+                        <mat-icon>person_remove</mat-icon>
+                    </button>
+                    }
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        @if (members.length === 0) {
+        <p class="empty">Aucun joueur ni entraîneur associé pour l’instant.</p>
+        }
+        }
+    </mat-card>
+
+    @if (terrains.length > 0) {
+    <mat-card class="terrains-card">
+        <h3><mat-icon>sports_tennis</mat-icon> Terrains disponibles (aperçu)</h3>
+        <ul>
+            @for (t of terrains; track t.id) {
+            <li>{{ t.nom }} — {{ t.localisation }} ({{ t.disponible ? 'disponible' : 'indisponible' }})</li>
+            }
+        </ul>
+    </mat-card>
+    }
+</div>
+}

@@ -1,0 +1,77 @@
+<app-page-header
+    title="Terrains"
+    subtitle="Infrastructures et liaison aux compétitions"
+    icon="location_on"
+    [breadcrumbs]="[{ label: 'Dashboard', route: '/app/dashboard' }, { label: 'Terrains' }]"
+    [actions]="headerActions"
+></app-page-header>
+
+<mat-card class="filter-card">
+    <div class="filters">
+        <mat-form-field appearance="outline" style="flex: 1; min-width: 200px">
+            <mat-label>Rechercher…</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput [(ngModel)]="search" (ngModelChange)="filter()" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="min-width: 160px">
+            <mat-label>Disponibilité</mat-label>
+            <mat-select [(ngModel)]="disponibleFilter" (ngModelChange)="filter()">
+                <mat-option value="">Tous</mat-option>
+                <mat-option value="yes">Disponible</mat-option>
+                <mat-option value="no">Indisponible</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</mat-card>
+
+@if (loading()) {
+<div class="loading-container"><mat-spinner diameter="40"></mat-spinner></div>
+} @else {
+<div class="venues-grid">
+    @for (t of filtered; track t.id) {
+    <mat-card class="venue-card">
+        <div class="venue-image">
+            @if (t.image) {
+            <img [src]="t.image" alt="" class="venue-img" />
+            } @else {
+            <mat-icon class="venue-placeholder-icon">sports_tennis</mat-icon>
+            }
+            <div class="type-tag">{{ t.prixParHeure | number : '1.0-0' }} DT/h</div>
+        </div>
+        <div class="venue-content">
+            <div class="venue-title">
+                <h3>{{ t.nom }}</h3>
+                <app-status-badge [status]="statusForBadge(t)"></app-status-badge>
+            </div>
+            <p class="club-link">
+                <mat-icon>place</mat-icon>
+                {{ t.localisation || '—' }}
+            </p>
+            <mat-divider style="margin: 12px 0"></mat-divider>
+            <div class="venue-specs">
+                <div class="spec-item"><mat-icon>texture</mat-icon>{{ t.surface || '—' }}</div>
+                @if (t.clubId) {
+                <div class="spec-item"><mat-icon>groups</mat-icon>Club #{{ t.clubId }}</div>
+                }
+                <div class="spec-item">
+                    <mat-icon>emoji_events</mat-icon>
+                    {{ t.competitionIds.length }} compétition(s)
+                </div>
+            </div>
+            <div class="venue-actions">
+                <a mat-stroked-button [routerLink]="['/app/venues', t.id]" style="flex: 1">Détails</a>
+                @if (canManage(t)) {
+                <a mat-flat-button color="primary" [routerLink]="['/app/venues', t.id, 'edit']" style="flex: 1"
+                    >Modifier</a
+                >
+                } @if (canDelete() && canManage(t)) {
+                <button mat-icon-button color="warn" type="button" (click)="deleteTerrain(t, $event)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                }
+            </div>
+        </div>
+    </mat-card>
+    }
+</div>
+}

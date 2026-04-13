@@ -1,0 +1,177 @@
+<app-page-header title="Nouvelle Compétition" subtitle="Créer un nouveau tournoi ou championnat" icon="add_box"
+    [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'}, {label:'Compétitions', route:'/app/competitions'}, {label:'Création'}]">
+</app-page-header>
+
+<div class="form-layout">
+    <div class="form-main">
+        <mat-card class="form-card">
+            <form [formGroup]="competitionForm" (ngSubmit)="onSubmit()">
+
+                <!-- SECTION 1: Informations Générales -->
+                <mat-card-header class="section-header">
+                    <mat-icon mat-card-avatar color="primary">info</mat-icon>
+                    <mat-card-title>Informations Générales</mat-card-title>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content class="pt-24">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nom de la compétition</mat-label>
+                        <input matInput formControlName="name" placeholder="Ex: Championnat National 2025" required />
+                        <mat-error>Le nom est requis (min 5 caractères)</mat-error>
+                    </mat-form-field>
+
+                    <div class="form-row mt-16">
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Type de compétition</mat-label>
+                            <mat-select formControlName="type" required>
+                                @for (t of types; track t.value) {
+                                <mat-option [value]="t.value">{{ t.label }}</mat-option>
+                                }
+                            </mat-select>
+                            <mat-error>Le type est requis</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Catégorie</mat-label>
+                            <mat-select formControlName="category" required>
+                                @for (c of categories; track c) {
+                                <mat-option [value]="c">{{ c }}</mat-option>
+                                }
+                            </mat-select>
+                            <mat-error>La catégorie est requise</mat-error>
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+
+                <!-- SECTION 2: Dates et Lieu -->
+                <mat-card-header class="section-header mt-16">
+                    <mat-icon mat-card-avatar color="accent">event</mat-icon>
+                    <mat-card-title>Dates et Organisation</mat-card-title>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content class="pt-24">
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Date de début</mat-label>
+                            <input matInput [matDatepicker]="pickerStart" formControlName="startDate" required>
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerStart></mat-datepicker>
+                            <mat-error>Requis</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Date de fin</mat-label>
+                            <input matInput [matDatepicker]="pickerEnd" formControlName="endDate" required>
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerEnd></mat-datepicker>
+                            <mat-error>Requis</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row mt-16">
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Lieu (Ville ou Salle)</mat-label>
+                            <mat-icon matPrefix>location_on</mat-icon>
+                            <input matInput formControlName="location" placeholder="Ex: Salle Omnisports, Tunis"
+                                required />
+                            <mat-error>Le lieu est requis</mat-error>
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+
+                <!-- SECTION 3: Inscriptions & Détails -->
+                <mat-card-header class="section-header mt-16">
+                    <mat-icon mat-card-avatar color="primary">groups</mat-icon>
+                    <mat-card-title>Inscriptions et Détails</mat-card-title>
+                </mat-card-header>
+                <mat-divider></mat-divider>
+                <mat-card-content class="pt-24">
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Date limite d'inscription</mat-label>
+                            <input matInput [matDatepicker]="pickerDead" formControlName="registrationDeadline"
+                                required>
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerDead"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerDead></mat-datepicker>
+                            <mat-error>Requise</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Nombre max. de participants</mat-label>
+                            <input matInput type="number" formControlName="maxParticipants" required min="2" />
+                            <mat-error>Requis</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-field">
+                            <mat-label>Récompense / Prix</mat-label>
+                            <input matInput formControlName="prize" placeholder="Ex: 5000 DT, Coupe..." />
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="full-width mt-16">
+                        <mat-label>Description (Optionnelle)</mat-label>
+                        <textarea matInput formControlName="description" rows="3"
+                            placeholder="Présentation rapide de la compétition..."></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width mt-16">
+                        <mat-label>Règlement ou lien vers le règlement</mat-label>
+                        <textarea matInput formControlName="rules" rows="2"
+                            placeholder="Ex: Règlement ITTF applicable..."></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width mt-16">
+                        <mat-label>Publication — utilisateurs cibles (rôles)</mat-label>
+                        <mat-select formControlName="targetRoles" multiple>
+                            @for (r of audienceRoles; track r.value) {
+                            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+                            }
+                        </mat-select>
+                        <mat-hint>Laissez vide pour tous les utilisateurs connectés. Sinon, seuls les rôles choisis verront la compétition une fois publiée.</mat-hint>
+                    </mat-form-field>
+                </mat-card-content>
+
+                <mat-divider></mat-divider>
+                <mat-card-actions class="form-actions">
+                    <button mat-button type="button" (click)="goBack()">Annuler</button>
+                    <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                        @if (loading()) {
+                        <mat-spinner diameter="20" class="btn-spinner"></mat-spinner> Sauvegarde...
+                        } @else {
+                        <ng-container><mat-icon>save</mat-icon> Créer la compétition</ng-container>
+                        }
+                    </button>
+                </mat-card-actions>
+            </form>
+        </mat-card>
+    </div>
+
+    <div class="form-sidebar">
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-card-title>Processus de Création</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="info-alert info-alert-primary mt-16 mb-24">
+                    <mat-icon>info</mat-icon>
+                    <p>La compétition sera d'abord créée en statut <strong>Brouillon</strong>. Vous pourrez la publier
+                        plus tard pour ouvrir les inscriptions.</p>
+                </div>
+                <ul class="steps-list">
+                    <li class="step active">
+                        <div class="step-icon">1</div>
+                        <div class="step-text">Saisie des informations</div>
+                    </li>
+                    <li class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-text">Sauvegarde (Brouillon)</div>
+                    </li>
+                    <li class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-text">Publication & Ouverture</div>
+                    </li>
+                </ul>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

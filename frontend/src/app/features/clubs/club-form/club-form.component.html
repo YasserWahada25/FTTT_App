@@ -1,0 +1,109 @@
+@if (pageLoading()) {
+<div class="loading-wrap">
+    <mat-spinner diameter="48"></mat-spinner>
+</div>
+} @else {
+<app-page-header
+    [title]="editId ? 'Modifier le club' : 'Nouveau club'"
+    subtitle="Informations officielles et coordonnées"
+    icon="sports_tennis"
+    [breadcrumbs]="[
+        { label: 'Dashboard', route: '/app/dashboard' },
+        { label: 'Clubs', route: '/app/clubs' },
+        { label: editId ? 'Modification' : 'Création' }
+    ]">
+</app-page-header>
+
+<div class="form-layout">
+    <mat-card class="form-card">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Nom du club</mat-label>
+                    <input matInput formControlName="name" required />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="narrow">
+                    <mat-label>Code</mat-label>
+                    <input matInput formControlName="code" required />
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" class="full">
+                <mat-label>URL du logo</mat-label>
+                <input matInput formControlName="logo" placeholder="https://..." />
+            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Adresse</mat-label>
+                    <input matInput formControlName="address" />
+                </mat-form-field>
+            </div>
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Ville</mat-label>
+                    <input matInput formControlName="city" required />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Région</mat-label>
+                    <input matInput formControlName="region" required />
+                </mat-form-field>
+            </div>
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Téléphone</mat-label>
+                    <input matInput formControlName="phone" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email" />
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" class="full">
+                <mat-label>Site web</mat-label>
+                <input matInput formControlName="website" />
+            </mat-form-field>
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="narrow">
+                    <mat-label>Année de fondation</mat-label>
+                    <input matInput type="number" formControlName="foundedYear" required />
+                </mat-form-field>
+                @if (!managerRestricted()) {
+                <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Statut</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option value="active">Actif</mat-option>
+                        <mat-option value="inactive">Inactif</mat-option>
+                        <mat-option value="suspended">Suspendu</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                }
+            </div>
+            @if (!managerRestricted()) {
+            <mat-form-field appearance="outline" class="full">
+                <mat-label>Responsable du club (optionnel)</mat-label>
+                <mat-select formControlName="managerUserId" panelClass="club-manager-form-select-panel">
+                    <mat-option value="">Aucun responsable désigné</mat-option>
+                    @for (m of clubManagers; track m.id) {
+                    <mat-option [value]="m.id">{{ m.firstName }} {{ m.lastName }} — {{ m.email }}</mat-option>
+                    }
+                </mat-select>
+                <mat-hint>Comptes actifs avec le rôle « responsable de club ».</mat-hint>
+            </mat-form-field>
+            }
+            <mat-divider class="my-16"></mat-divider>
+            <div class="actions">
+                <button mat-button type="button" (click)="cancel()">Annuler</button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                    @if (loading()) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                    } @else {
+                    <mat-icon>save</mat-icon>
+                    }
+                    @if (!loading()) {
+                    <span>Enregistrer</span>
+                    }
+                </button>
+            </div>
+        </form>
+    </mat-card>
+</div>
+}

@@ -1,0 +1,343 @@
+/* Rattachement club (utilisateurs avec clubId / clubName en session) */
+.club-affiliation-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e8eaf6 0%, #e3f2fd 100%);
+    border: 1px solid rgba(21, 101, 192, 0.22);
+    box-shadow: 0 2px 10px rgba(26, 35, 126, 0.08);
+}
+
+.club-affiliation-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a237e, #1565c0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.club-affiliation-icon-wrap mat-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.club-affiliation-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.club-affiliation-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #3949ab;
+}
+
+.club-affiliation-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.25;
+}
+
+.club-affiliation-hint {
+    font-size: 0.82rem;
+    color: rgba(0, 0, 0, 0.58);
+    line-height: 1.35;
+    max-width: 520px;
+}
+
+.club-affiliation-cta {
+    flex-shrink: 0;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+.club-affiliation-cta mat-icon {
+    margin-right: 2px;
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    vertical-align: middle;
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    border-top: 4px solid;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.kpi-icon mat-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1;
+}
+
+.kpi-label {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 4px 0 8px;
+    font-weight: 500;
+}
+
+.kpi-change {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: #9e9e9e;
+    font-weight: 500;
+}
+
+.kpi-change mat-icon {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.trend-up {
+    color: #2e7d32 !important;
+}
+
+.trend-alert {
+    color: #f57f17 !important;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dash-card {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+.card-icon {
+    background: #1565c0 !important;
+    color: white !important;
+}
+
+.card-icon.competitions {
+    background: #f57f17 !important;
+}
+
+.card-icon.licenses {
+    background: #2e7d32 !important;
+}
+
+.card-header-spacer {
+    flex: 1;
+}
+
+mat-card-header {
+    display: flex !important;
+    align-items: center;
+    padding: 16px 16px 0 !important;
+}
+
+mat-card-content {
+    padding: 16px !important;
+}
+
+/* Competitions List */
+.competitions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.comp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9ff;
+    border-radius: 10px;
+    padding: 12px;
+    gap: 12px;
+}
+
+.comp-name {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 0.875rem;
+}
+
+.comp-date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 3px;
+}
+
+.comp-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.comp-participants {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.small-icon {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* License Stats */
+.license-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.license-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.license-stat-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #444;
+    flex-shrink: 0;
+}
+
+.stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.license-stat-bar {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.license-stat-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 50px;
+    text-align: right;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.quick-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 8px;
+    border-radius: 12px;
+    background: #f8f9ff;
+    border: 1px solid #e8eaf6;
+    text-decoration: none;
+    color: #1a237e;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.quick-action:hover {
+    background: #e8eaf6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 35, 126, 0.15);
+}
+
+.quick-action mat-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: #1565c0;
+}

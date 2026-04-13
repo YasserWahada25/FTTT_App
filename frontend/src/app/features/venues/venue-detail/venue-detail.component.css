@@ -1,0 +1,93 @@
+.loading-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 48px;
+}
+
+.detail-wrap {
+    max-width: 720px;
+}
+
+.main-card {
+    padding: 20px 24px !important;
+    border-radius: 16px !important;
+}
+
+.header-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.hero {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #f5f5f5;
+}
+
+.hero-fallback {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a237e, #1565c0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-fallback mat-icon {
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+}
+
+.meta {
+    margin: 8px 0 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section {
+    margin: 20px 0;
+}
+
+.section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    margin: 0 0 12px;
+}
+
+.muted {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 0.9rem;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.chip-link {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 600;
+}
+
+.inline-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    vertical-align: middle;
+}

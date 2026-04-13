@@ -1,0 +1,141 @@
+<app-page-header [title]="pageTitle" [subtitle]="pageSubtitle" icon="assignment_add"
+    [breadcrumbs]="[{label:'Tableau de Bord', route:'/app/dashboard'}, {label:'Licences', route:'/app/licenses'}, {label:'Nouvelle'}]">
+</app-page-header>
+
+<div class="form-layout">
+    <div class="form-main">
+        <mat-card class="form-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar color="primary">contact_mail</mat-icon>
+                <mat-card-title>Informations du Joueur</mat-card-title>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <form [formGroup]="licenseForm" (ngSubmit)="onSubmit()">
+                <mat-card-content class="pt-24">
+                    <div class="form-row">
+                        @if (isPlayerSelfService) {
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
+                            <mat-label>Joueur</mat-label>
+                            <input matInput [value]="(authService.currentUser?.firstName || '') + ' ' + (authService.currentUser?.lastName || '')" disabled />
+                            <mat-hint>Demande pour votre compte joueur</mat-hint>
+                        </mat-form-field>
+                        } @else {
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
+                            <mat-label>Joueur concerné</mat-label>
+                            <mat-select formControlName="playerId" required panelClass="license-form-select-panel">
+                                @for (player of players; track player.id) {
+                                <mat-option [value]="player.id">{{ player.firstName }} {{ player.lastName }} ({{
+                                    player.email }})</mat-option>
+                                }
+                            </mat-select>
+                            <mat-error>Le joueur est requis</mat-error>
+                            <mat-hint>Sélectionner un joueur du club (responsable) ou tout joueur (admin)</mat-hint>
+                        </mat-form-field>
+                        }
+                    </div>
+
+                    <div class="form-row mt-16">
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
+                            <mat-label>Club d'affiliation</mat-label>
+                            <mat-select formControlName="clubId" required panelClass="license-form-select-panel">
+                                @for (club of clubs; track club.id) {
+                                <mat-option [value]="club.id">{{ club.name }}</mat-option>
+                                }
+                            </mat-select>
+                            <mat-error>Le club est requis</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-field" subscriptSizing="dynamic">
+                            <mat-label>Catégorie Sportive</mat-label>
+                            <mat-select formControlName="category" required panelClass="license-form-select-panel">
+                                @for (cat of categories; track cat) {
+                                <mat-option [value]="cat">{{ cat }}</mat-option>
+                                }
+                            </mat-select>
+                            <mat-error>La catégorie est requise</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row mt-16">
+                        <div class="radio-group-container">
+                            <label class="radio-label">Type de demande:</label>
+                            <mat-radio-group formControlName="actionType" color="primary">
+                                <mat-radio-button value="new">Nouvelle affiliation</mat-radio-button>
+                                <mat-radio-button value="renewal">Renouvellement</mat-radio-button>
+                                <mat-radio-button value="transfer">Mutation (Transfert)</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+
+                </mat-card-content>
+
+                <mat-card-header class="mt-24 border-top pt-24">
+                    <mat-icon mat-card-avatar color="accent">folder_shared</mat-icon>
+                    <mat-card-title>Documents Requis</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="pt-16">
+                    <div class="upload-zone">
+                        <mat-icon>medical_information</mat-icon>
+                        <div class="upload-text">Certificat Médical (Apte à la pratique)</div>
+                        <button mat-stroked-button type="button" color="primary">Parcourir...</button>
+                    </div>
+                    <div class="upload-zone mt-16">
+                        <mat-icon>add_a_photo</mat-icon>
+                        <div class="upload-text">Photo d'identité numérique</div>
+                        <button mat-stroked-button type="button" color="primary">Parcourir...</button>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="full-width mt-24">
+                        <mat-label>Notes / Commentaires (Optionnel)</mat-label>
+                        <textarea matInput formControlName="notes" rows="3"
+                            placeholder="Informations complémentaires pour le service des licences..."></textarea>
+                    </mat-form-field>
+                </mat-card-content>
+
+                <mat-divider></mat-divider>
+                <mat-card-actions class="form-actions">
+                    <button mat-button type="button" (click)="goBack()">Annuler</button>
+                    <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                        @if (loading()) {
+                        <mat-spinner diameter="20" class="btn-spinner"></mat-spinner> Envoi...
+                        } @else {
+                        <ng-container><mat-icon>send</mat-icon> Soumettre la demande</ng-container>
+                        }
+                    </button>
+                </mat-card-actions>
+            </form>
+        </mat-card>
+    </div>
+
+    <div class="form-sidebar">
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-card-title>Processus de validation</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <ul class="steps-list">
+                    <li class="step active">
+                        <div class="step-icon"><mat-icon>edit_document</mat-icon></div>
+                        <div class="step-text">1. Demande soumise (Club ou Joueur)</div>
+                    </li>
+                    <li class="step">
+                        <div class="step-icon"><mat-icon>admin_panel_settings</mat-icon></div>
+                        <div class="step-text">2. Vérification par la FTTT</div>
+                    </li>
+                    <li class="step">
+                        <div class="step-icon"><mat-icon>payments</mat-icon></div>
+                        <div class="step-text">3. Paiement des droits d'affiliation</div>
+                    </li>
+                    <li class="step">
+                        <div class="step-icon"><mat-icon>verified</mat-icon></div>
+                        <div class="step-text">4. Licence validée et activée</div>
+                    </li>
+                </ul>
+                <div class="info-alert info-alert-warning mt-24">
+                    <mat-icon>warning</mat-icon>
+                    <p>Assurez-vous que le certificat médical date de moins de 3 mois pour être accepté.</p>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
