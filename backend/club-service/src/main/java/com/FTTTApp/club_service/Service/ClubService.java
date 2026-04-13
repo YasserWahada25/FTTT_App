@@ -1,7 +1,7 @@
 package com.FTTTApp.club_service.Service;
 
 import com.FTTTApp.club_service.Client.TerrainClient;
-import com.FTTTApp.club_service.Client.TerrainDTO;
+import com.FTTTApp.club_service.DTO.TerrainDTO;
 import com.FTTTApp.club_service.Entity.Club;
 import com.FTTTApp.club_service.Repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;

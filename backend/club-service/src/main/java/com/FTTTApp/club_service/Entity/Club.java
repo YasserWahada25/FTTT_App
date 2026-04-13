@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // On utilise Long pour la DB, mais exposé en String via Jackson si besoin
 
     private String name;
     private String code;

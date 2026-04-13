@@ -41,24 +41,24 @@ public class ProfileController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ProfileDTO> getProfileByUserId(@PathVariable("userId") String userId) {
+    public ResponseEntity<ProfileDTO> getProfileByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(profileService.getProfileByUserId(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileDTO> getProfileById(@PathVariable("id") Long id) {
+    public ResponseEntity<ProfileDTO> getProfileById(@PathVariable Long id) {
         return ResponseEntity.ok(profileService.getProfileById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProfileDTO> updateProfile(@PathVariable("id") Long id, @Valid @RequestBody ProfileDTO profileDTO) {
+    public ResponseEntity<ProfileDTO> updateProfile(@PathVariable Long id, @Valid @RequestBody ProfileDTO profileDTO) {
         profileDTO.setId(id);
         return ResponseEntity.ok(profileService.updateProfile(profileDTO));
     }
 
     @PutMapping("/user/{userId}")
     public ResponseEntity<ProfileDTO> updateProfileByUserId(
-            @PathVariable("userId") String userId,
+            @PathVariable String userId,
             @Valid @RequestBody ProfileDTO profileDTO
     ) {
         return ResponseEntity.ok(profileService.updateProfileByUserId(userId, profileDTO));
@@ -71,7 +71,7 @@ public class ProfileController {
 
     @PatchMapping("/user/{userId}/visibility")
     public ResponseEntity<ProfileDTO> updateVisibility(
-            @PathVariable("userId") String userId,
+            @PathVariable String userId,
             @RequestBody Map<String, Boolean> payload
     ) {
         boolean publicProfile = Boolean.TRUE.equals(payload.get("publicProfile"));
@@ -79,13 +79,13 @@ public class ProfileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProfileByRest(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteProfileByRest(@PathVariable Long id) {
         profileService.deleteProfile(id);
         return ResponseEntity.ok("Profile deleted successfully");
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProfile(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteProfile(@PathVariable Long id) {
         profileService.deleteProfile(id);
         return ResponseEntity.ok("Profile deleted successfully");
     }

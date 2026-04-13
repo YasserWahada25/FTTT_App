@@ -11,36 +11,25 @@ import org.springframework.context.annotation.Bean;
 @EnableDiscoveryClient
 public class GatewayServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayServiceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(GatewayServiceApplication.class, args);
+	}
 
-    @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
-                // Route pour le microservice gestion-club
-                .route("club-service-route", r -> r.path("/api/clubs/**")
-                        .uri("lb://club-service"))
-
-                // Route pour le microservice terrain-service
-                .route("terrain-service-route", r -> r.path("/terrains/**")
-                        .uri("lb://terrain-service"))
-
-                // Route pour le microservice SERVICE-PROFILE
-                .route("SERVICE-PROFILE-route", r -> r.path("/api/profiles/**")
-                        .uri("lb://SERVICE-PROFILE"))
-
-                // Route pour le microservice AUTH-SERVICE
-                .route("AUTH-SERVICE-route", r -> r.path("/api/auth/**")
-                        .uri("lb://AUTH-SERVICE"))
-
-                // Licences sportives
-                .route("Licences-Service-route", r -> r.path("/api/licenses/**")
-                        .uri("lb://Licences-Service"))
-
-                .route("competition-service-route", r -> r.path("/api/competitions/**")
-                        .uri("lb://competition-service"))
-
-                .build();
-    }
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes()
+				.route("club-service-route", r -> r.path("/api/clubs/**")
+						.uri("lb://club-service"))
+				.route("terrain-service-route", r -> r.path("/terrains/**")
+						.uri("lb://terrain-service"))
+				.route("SERVICE-PROFILE-route", r -> r.path("/api/profiles/**")
+						.uri("lb://SERVICE-PROFILE"))
+				.route("AUTH-SERVICE-route", r -> r.path("/api/auth/**")
+						.uri("lb://AUTH-SERVICE"))
+				.route("Licences-Service-route", r -> r.path("/api/licenses/**")
+						.uri("lb://Licences-Service"))
+				.route("competition-service-route", r -> r.path("/api/competitions/**")
+						.uri("lb://competition-service"))
+				.build();
+	}
 }
