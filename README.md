@@ -115,7 +115,7 @@ Les ports peuvent varier selon `application.properties` ou les variables d’env
 | Service-Profile | Profils | 8096 |
 | Club-Service | Clubs | 9002 |
 | Terrain-Service | Terrains / lieux | 9008 |
-| Keycloak | IAM (souvent en conteneur sur le port 8080 ; adapter l’URL selon votre installation) | 8080 ou autre |
+| Keycloak | IAM (souvent en conteneur sur le port 8080 ; adapter l’URL selon votre installation) |  9090 |
 
 Chaque service utilise en général **sa propre base MySQL** (schéma dédié), créée ou mise à jour via JPA (`ddl-auto` typiquement `update` en développement).
 
