@@ -59,11 +59,12 @@ export class LicenseFormComponent implements OnInit {
             clubId: ['', Validators.required],
             category: ['', Validators.required],
             actionType: ['new', Validators.required],
-            medicalCertificate: [null],
-            photo: [null],
-            notes: ['']
+            notes: [''],
         });
     }
+
+    medicalFile = signal<File | null>(null);
+    photoFile = signal<File | null>(null);
 
     get isPlayerSelfService(): boolean {
         return this.authService.hasRole('PLAYER')
@@ -113,9 +114,30 @@ export class LicenseFormComponent implements OnInit {
         return 'Soumettre une demande d\'affiliation (validation fédérale requise)';
     }
 
+    onMedicalSelected(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        this.medicalFile.set(input.files?.[0] ?? null);
+    }
+
+    onPhotoSelected(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        this.photoFile.set(input.files?.[0] ?? null);
+    }
+
     onSubmit(): void {
         if (this.licenseForm.invalid) {
             this.snackBar.open('Veuillez remplir tous les champs obligatoires.', 'Fermer', { duration: 3000 });
+            return;
+        }
+
+        const med = this.medicalFile();
+        const pic = this.photoFile();
+        if (!med || !pic) {
+            this.snackBar.open(
+                'Le certificat médical et la photo d’identité numérique sont obligatoires.',
+                'Fermer',
+                { duration: 5000 }
+            );
             return;
         }
 
@@ -136,15 +158,19 @@ export class LicenseFormComponent implements OnInit {
         const season = `${y}-${y + 1}`;
 
         this.licensesService
-            .create({
-                playerId: formValue.playerId,
-                playerName: `${selectedPlayer.firstName} ${selectedPlayer.lastName}`.trim(),
-                clubId: formValue.clubId,
-                clubName: selectedClub.name,
-                category: formValue.category,
-                season,
-                notes: formValue.notes || undefined,
-            })
+            .createWithDocuments(
+                {
+                    playerId: formValue.playerId,
+                    playerName: `${selectedPlayer.firstName} ${selectedPlayer.lastName}`.trim(),
+                    clubId: formValue.clubId,
+                    clubName: selectedClub.name,
+                    category: formValue.category,
+                    season,
+                    notes: formValue.notes || undefined,
+                },
+                med,
+                pic
+            )
             .subscribe({
                 next: () => {
                     this.snackBar.open('Demande de licence soumise avec succès.', 'Fermer', {

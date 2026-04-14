@@ -22,6 +22,9 @@ export interface License {
     /** Dérivé backend : licence approuvée et non expirée à la date du jour */
     validNow?: boolean;
     expiredByDate?: boolean;
+    /** Pièces jointes enregistrées avec la demande */
+    hasMedicalCertificate?: boolean;
+    hasIdentityPhoto?: boolean;
 }
 
 /** Réponse brute API Spring (énumérations en majuscules) */
@@ -46,6 +49,8 @@ export interface LicenseApiResponse {
     expiredByDate?: boolean;
     createdAt?: string;
     updatedAt?: string;
+    hasMedicalCertificate?: boolean;
+    hasIdentityPhoto?: boolean;
 }
 
 export interface LicenseValidityApiResponse {

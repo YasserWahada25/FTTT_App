@@ -15,6 +15,22 @@
   grid-column: 1 / -1;
 }
 
+.doc-header {
+  padding-top: 1rem;
+}
+
+.doc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+}
+
+.doc-actions button mat-icon {
+  margin-right: 0.35rem;
+  vertical-align: middle;
+}
+
 .label {
   display: block;
   font-size: 0.75rem;

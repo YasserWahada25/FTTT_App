@@ -3,6 +3,7 @@ package com.FTTTApp.Licences_Service.dto;
 import com.FTTTApp.Licences_Service.entities.Licence;
 import com.FTTTApp.Licences_Service.entities.LicenceStatus;
 import com.FTTTApp.Licences_Service.entities.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,6 +34,9 @@ public class LicenceResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private boolean hasMedicalCertificate;
+    private boolean hasIdentityPhoto;
+
     public static LicenceResponse fromEntity(Licence licence) {
         LocalDate today = LocalDate.now();
         LicenceResponse dto = new LicenceResponse();
@@ -58,6 +62,10 @@ public class LicenceResponse {
                 && today.isAfter(licence.getExpiryDate());
         dto.createdAt = licence.getCreatedAt();
         dto.updatedAt = licence.getUpdatedAt();
+        dto.hasMedicalCertificate = licence.getMedicalCertificatePath() != null
+                && !licence.getMedicalCertificatePath().isBlank();
+        dto.hasIdentityPhoto = licence.getIdentityPhotoPath() != null
+                && !licence.getIdentityPhotoPath().isBlank();
         return dto;
     }
 
@@ -139,6 +147,16 @@ public class LicenceResponse {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    @JsonProperty("hasMedicalCertificate")
+    public boolean isHasMedicalCertificate() {
+        return hasMedicalCertificate;
+    }
+
+    @JsonProperty("hasIdentityPhoto")
+    public boolean isHasIdentityPhoto() {
+        return hasIdentityPhoto;
     }
 }
 

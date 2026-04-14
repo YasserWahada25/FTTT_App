@@ -44,6 +44,28 @@
         <div class="full"><span class="label">Notes</span>{{ license.notes }}</div>
         }
     </mat-card-content>
+    @if (license.hasMedicalCertificate || license.hasIdentityPhoto) {
+    <mat-divider></mat-divider>
+    <mat-card-header class="doc-header">
+        <mat-icon mat-card-avatar color="primary">attach_file</mat-icon>
+        <mat-card-title>Pièces jointes</mat-card-title>
+        <mat-card-subtitle>Documents fournis avec la demande</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="doc-actions">
+        @if (license.hasMedicalCertificate) {
+        <button mat-stroked-button color="primary" type="button" (click)="downloadMedical()">
+            <mat-icon>medical_information</mat-icon>
+            Certificat médical
+        </button>
+        }
+        @if (license.hasIdentityPhoto) {
+        <button mat-stroked-button color="primary" type="button" (click)="downloadIdentityPhoto()">
+            <mat-icon>portrait</mat-icon>
+            Photo d'identité
+        </button>
+        }
+    </mat-card-content>
+    }
     <mat-card-actions align="end">
         @if (canRenew) {
         <button mat-flat-button color="primary" (click)="renew()"><mat-icon>autorenew</mat-icon> Demander un renouvellement</button>
