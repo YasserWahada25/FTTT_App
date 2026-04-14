@@ -76,13 +76,43 @@
                 <mat-card-content class="pt-16">
                     <div class="upload-zone">
                         <mat-icon>medical_information</mat-icon>
-                        <div class="upload-text">Certificat Médical (Apte à la pratique)</div>
-                        <button mat-stroked-button type="button" color="primary">Parcourir...</button>
+                        <div class="upload-text">
+                            Certificat Médical (Apte à la pratique)
+                            <span class="file-hint">PDF, JPEG ou PNG — max 8 Mo</span>
+                            @if (medicalFile(); as mf) {
+                            <span class="file-name">{{ mf.name }}</span>
+                            }
+                        </div>
+                        <input
+                            type="file"
+                            class="visually-hidden"
+                            #medicalInput
+                            accept=".pdf,image/jpeg,image/png,image/jpg"
+                            (change)="onMedicalSelected($event)"
+                        />
+                        <button mat-stroked-button type="button" color="primary" (click)="medicalInput.click()">
+                            Parcourir...
+                        </button>
                     </div>
                     <div class="upload-zone mt-16">
                         <mat-icon>add_a_photo</mat-icon>
-                        <div class="upload-text">Photo d'identité numérique</div>
-                        <button mat-stroked-button type="button" color="primary">Parcourir...</button>
+                        <div class="upload-text">
+                            Photo d'identité numérique
+                            <span class="file-hint">JPEG ou PNG — max 5 Mo</span>
+                            @if (photoFile(); as pf) {
+                            <span class="file-name">{{ pf.name }}</span>
+                            }
+                        </div>
+                        <input
+                            type="file"
+                            class="visually-hidden"
+                            #photoInput
+                            accept="image/jpeg,image/png,image/jpg"
+                            (change)="onPhotoSelected($event)"
+                        />
+                        <button mat-stroked-button type="button" color="primary" (click)="photoInput.click()">
+                            Parcourir...
+                        </button>
                     </div>
 
                     <mat-form-field appearance="outline" class="full-width mt-24">

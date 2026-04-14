@@ -131,4 +131,43 @@ export class LicenseDetailComponent implements OnInit {
             void this.router.navigate(['/app/licenses/my']);
         }
     }
+
+    downloadMedical(): void {
+        if (!this.license?.hasMedicalCertificate) {
+            return;
+        }
+        this.licensesService.downloadMedicalCertificate(this.license.id).subscribe({
+            next: (blob) => this.triggerDownload(blob, 'certificat-medical'),
+            error: () =>
+                this.snackBar.open('Téléchargement du certificat impossible.', 'Fermer', { duration: 4000 }),
+        });
+    }
+
+    downloadIdentityPhoto(): void {
+        if (!this.license?.hasIdentityPhoto) {
+            return;
+        }
+        this.licensesService.downloadIdentityPhoto(this.license.id).subscribe({
+            next: (blob) => this.triggerDownload(blob, 'photo-identite'),
+            error: () =>
+                this.snackBar.open('Téléchargement de la photo impossible.', 'Fermer', { duration: 4000 }),
+        });
+    }
+
+    private triggerDownload(blob: Blob, baseName: string): void {
+        let ext = '';
+        if (blob.type.includes('pdf')) {
+            ext = '.pdf';
+        } else if (blob.type.includes('png')) {
+            ext = '.png';
+        } else if (blob.type.includes('jpeg') || blob.type.includes('jpg')) {
+            ext = '.jpg';
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = baseName + ext;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 }

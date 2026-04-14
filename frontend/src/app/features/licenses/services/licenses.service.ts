@@ -57,6 +57,34 @@ export class LicensesService {
             .pipe(map((r) => this.mapLicense(r)));
     }
 
+    /**
+     * Création avec certificat médical (PDF / image) et photo d'identité (JPEG / PNG), multipart/form-data.
+     */
+    createWithDocuments(
+        data: LicenseCreateRequest,
+        medicalCertificate: File,
+        identityPhoto: File
+    ): Observable<License> {
+        const fd = new FormData();
+        fd.append(
+            'payload',
+            new Blob([JSON.stringify(data)], { type: 'application/json' })
+        );
+        fd.append('medicalCertificate', medicalCertificate, medicalCertificate.name);
+        fd.append('identityPhoto', identityPhoto, identityPhoto.name);
+        return this.http
+            .post<LicenseApiResponse>(this.base, fd)
+            .pipe(map((r) => this.mapLicense(r)));
+    }
+
+    downloadMedicalCertificate(id: string): Observable<Blob> {
+        return this.http.get(`${this.base}/${id}/documents/medical`, { responseType: 'blob' });
+    }
+
+    downloadIdentityPhoto(id: string): Observable<Blob> {
+        return this.http.get(`${this.base}/${id}/documents/photo`, { responseType: 'blob' });
+    }
+
     renew(
         id: string,
         body?: { season?: string; expiryDate?: string; amount?: number; category?: string; notes?: string }
@@ -103,6 +131,8 @@ export class LicensesService {
                     : undefined,
             validNow: r.validNow,
             expiredByDate: r.expiredByDate,
+            hasMedicalCertificate: r.hasMedicalCertificate,
+            hasIdentityPhoto: r.hasIdentityPhoto,
         };
     }
 

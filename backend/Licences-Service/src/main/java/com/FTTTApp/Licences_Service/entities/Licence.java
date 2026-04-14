@@ -57,6 +57,13 @@ public class Licence {
     @Column(name = "notes", length = 1000)
     private String notes;
 
+    /** Chemin relatif sous app.licenses.upload-dir (ex.42/medical.pdf). */
+    @Column(name = "medical_certificate_path", length = 512)
+    private String medicalCertificatePath;
+
+    @Column(name = "identity_photo_path", length = 512)
+    private String identityPhotoPath;
+
     /** Référence à la licence précédente lors d'un renouvellement (chaîne de dossiers). */
     @Column(name = "renewed_from_licence_id")
     private Long renewedFromLicenceId;
@@ -124,6 +131,12 @@ public class Licence {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public String getMedicalCertificatePath() { return medicalCertificatePath; }
+    public void setMedicalCertificatePath(String medicalCertificatePath) { this.medicalCertificatePath = medicalCertificatePath; }
+
+    public String getIdentityPhotoPath() { return identityPhotoPath; }
+    public void setIdentityPhotoPath(String identityPhotoPath) { this.identityPhotoPath = identityPhotoPath; }
 
     public Long getRenewedFromLicenceId() { return renewedFromLicenceId; }
     public void setRenewedFromLicenceId(Long renewedFromLicenceId) { this.renewedFromLicenceId = renewedFromLicenceId; }

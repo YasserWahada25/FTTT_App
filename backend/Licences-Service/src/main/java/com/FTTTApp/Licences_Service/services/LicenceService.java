@@ -10,16 +10,24 @@ import com.FTTTApp.Licences_Service.entities.LicenceStatus;
 import com.FTTTApp.Licences_Service.entities.PaymentStatus;
 import com.FTTTApp.Licences_Service.repositories.LicenceRepository;
 import com.FTTTApp.Licences_Service.security.JwtLicenseSupport;
+import com.FTTTApp.Licences_Service.storage.LicenseDocumentStorage;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,9 +37,11 @@ public class LicenceService {
     private static final int RENEWAL_WINDOW_DAYS = 120;
 
     private final LicenceRepository licenceRepository;
+    private final LicenseDocumentStorage licenseDocumentStorage;
 
-    public LicenceService(LicenceRepository licenceRepository) {
+    public LicenceService(LicenceRepository licenceRepository, LicenseDocumentStorage licenseDocumentStorage) {
         this.licenceRepository = licenceRepository;
+        this.licenseDocumentStorage = licenseDocumentStorage;
     }
 
     @Transactional(readOnly = true)
@@ -152,6 +162,79 @@ public class LicenceService {
             return createAsAdmin(request);
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Création de licence non autorisée pour ce rôle.");
+    }
+
+    /**
+     * Crée une demande de licence et enregistre certificat médical + photo d'identité sur disque.
+     */
+    @Transactional
+    public LicenceResponse createWithDocumentsForPrincipal(
+            Jwt jwt,
+            LicenceRequest request,
+            MultipartFile medicalCertificate,
+            MultipartFile identityPhoto
+    ) {
+        LicenceResponse created = createForPrincipal(jwt, request);
+        Long id = created.getId();
+        if (id == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Identifiant de licence manquant.");
+        }
+        try {
+            String medicalRel = licenseDocumentStorage.saveMedicalCertificate(id, medicalCertificate);
+            String photoRel = licenseDocumentStorage.saveIdentityPhoto(id, identityPhoto);
+            Licence lic = licenceRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Licence introuvable après création."));
+            lic.setMedicalCertificatePath(medicalRel);
+            lic.setIdentityPhotoPath(photoRel);
+            return LicenceResponse.fromEntity(licenceRepository.save(lic));
+        } catch (RuntimeException ex) {
+            licenseDocumentStorage.deleteFolder(id);
+            throw ex;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Resource> downloadMedicalCertificate(Jwt jwt, Long id) {
+        Licence l = licenceRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Licence introuvable."));
+        assertCanViewLicence(jwt, l);
+        if (!StringUtils.hasText(l.getMedicalCertificatePath())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucun certificat médical joint.");
+        }
+        return buildFileResponse(l.getMedicalCertificatePath(), "certificat-medical");
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Resource> downloadIdentityPhoto(Jwt jwt, Long id) {
+        Licence l = licenceRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Licence introuvable."));
+        assertCanViewLicence(jwt, l);
+        if (!StringUtils.hasText(l.getIdentityPhotoPath())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucune photo d'identité jointe.");
+        }
+        return buildFileResponse(l.getIdentityPhotoPath(), "photo-identite");
+    }
+
+    private ResponseEntity<Resource> buildFileResponse(String relativePath, String downloadBaseName) {
+        Resource resource = licenseDocumentStorage.loadAsResource(relativePath);
+        MediaType mediaType = mediaTypeForStoredPath(relativePath);
+        String ext = relativePath.contains(".") ? relativePath.substring(relativePath.lastIndexOf('.')) : "";
+        String filename = downloadBaseName + ext;
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
+    }
+
+    private static MediaType mediaTypeForStoredPath(String path) {
+        String p = path.toLowerCase(Locale.ROOT);
+        if (p.endsWith(".pdf")) {
+            return MediaType.APPLICATION_PDF;
+        }
+        if (p.endsWith(".png")) {
+            return MediaType.IMAGE_PNG;
+        }
+        return MediaType.IMAGE_JPEG;
     }
 
     @Transactional
