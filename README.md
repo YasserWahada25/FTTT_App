@@ -115,7 +115,7 @@ Les ports peuvent varier selon `application.properties` ou les variables d’env
 | Service-Profile | Profils | 8096 |
 | Club-Service | Clubs | 9002 |
 | Terrain-Service | Terrains / lieux | 9008 |
-| Keycloak | IAM (souvent en conteneur sur le port 8080 ; adapter l’URL selon votre installation) |  9090 |
+| Keycloak |  9090 |
 
 Chaque service utilise en général **sa propre base MySQL** (schéma dédié), créée ou mise à jour via JPA (`ddl-auto` typiquement `update` en développement).
 
@@ -151,7 +151,7 @@ Certains modules proposent un profil `docker` (`application-docker.properties`) 
 ```bash
 cd frontend
 npm install
-npm start
+ng serve
 ```
 
 Le fichier `frontend/proxy.conf.json` redirige les préfixes `/api` vers la Gateway et peut cibler directement certains services en développement local (ex. auth, profils) pour éviter les erreurs si la Gateway ou Eureka ne sont pas démarrés.
