@@ -8,11 +8,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Eureka-Service" />
-        <module name="Gateway-Service" />
-        <module name="Licences-Service" />
         <module name="club-service" />
         <module name="terrain-service" />
         <module name="Auth-Service" />
+        <module name="Gateway-Service" />
+        <module name="Licences-Service" />
+        <module name="ConfigServer-service" />
       </profile>
       <profile name="Annotation profile for Sevice-Profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -20,8 +21,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
+        <module name="Competition_Service" />
         <module name="Sevice-Profile" />
       </profile>
     </annotationProcessing>
@@ -29,6 +30,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Auth-Service" options="-parameters" />
+      <module name="Competition_Service" options="-parameters" />
       <module name="ConfigServer-service" options="-parameters" />
       <module name="Eureka-Service" options="-parameters" />
       <module name="Gateway-Service" options="-parameters" />

@@ -35,6 +35,7 @@ export class ProfilesService {
     private readonly authService: AuthService
   ) {}
 
+  
   /** Liste des profils (annuaire) — utilisé notamment pour lier joueurs et clubs aux licences. */
   getAll(): Observable<Profile[]> {
     return this.http.get<ProfileApiResponse[]>(`/api/profiles`).pipe(

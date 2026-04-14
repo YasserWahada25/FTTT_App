@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/backend/Auth-Service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/Competition_Service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/ConfigServer-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/Eureka-Service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/Gateway-Service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/Licences-Service/src/main/java" charset="UTF-8" />
