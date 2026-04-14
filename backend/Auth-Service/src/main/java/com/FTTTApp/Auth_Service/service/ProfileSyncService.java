@@ -1,24 +1,21 @@
 package com.FTTTApp.Auth_Service.service;
 
+import com.FTTTApp.Auth_Service.client.ProfileServiceClient;
 import com.FTTTApp.Auth_Service.dto.ProfileSyncRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ProfileSyncService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileSyncService.class);
 
-    @Value("${profile.service-url}")
-    private String profileServiceUrl;
+    private final ProfileServiceClient profileServiceClient;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    public ProfileSyncService(ProfileServiceClient profileServiceClient) {
+        this.profileServiceClient = profileServiceClient;
+    }
 
     public void syncActiveProfile(
             String userId,
@@ -35,15 +32,8 @@ public class ProfileSyncService {
         request.setCategory(role);
         request.setPhone(hasText(phone) ? phone.trim() : null);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
         try {
-            restTemplate.postForEntity(
-                    profileServiceUrl + "/api/profiles/sync",
-                    new HttpEntity<>(request, headers),
-                    Void.class
-            );
+            profileServiceClient.syncProfile(request);
         } catch (Exception exception) {
             LOGGER.warn("Unable to sync profile for userId={}: {}", userId, exception.getMessage());
         }
